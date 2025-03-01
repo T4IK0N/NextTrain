@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">NextTrain</string>
-    <string name="trainIconDescription">Train Icon</string>
+    <string name="location_icon_description">Train Icon</string>
     <string name="searchButtonText">SEARCH</string>
+    <string name="last_direction_button_text">Favorite Route</string>
     <string name="dateIconDescription">Date Icon</string>
+    <string name="startLocation">Enter start location</string>
+    <string name="endLocation">Enter end location</string>
+    <string name="replace_directions_description">Replace Directions</string>
+    <!-- bottom nav menu -->
+    <string name="home_menu">Home</string>
+    <string name="tickets_menu">Tickets</string>
 </resources>

@@ -7,13 +7,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
+    android:fillViewport="true"
     tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:paddingHorizontal="50dp"
-        android:paddingTop="50dp">
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="70dp">
 
         <TextView
             android:id="@+id/appNameTextView"
@@ -22,15 +23,16 @@
             android:fontFamily="@font/montserrat_medium"
             android:text="@string/app_name"
             android:textColor="@color/text"
-            android:textSize="30sp"
+            android:textSize="35sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="25dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -38,76 +40,99 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:orientation="horizontal"
-                android:gravity="center">
-
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/train_icon"
-                    android:contentDescription="@string/trainIconDescription" />
+                android:layout_height="60dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/startLocation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:autofillHints=""
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:autofillHints="none"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:hint="@string/endLocation"
                     android:inputType="text"
-                    tools:ignore="LabelFor" />
+                    android:paddingBottom="1dp"
+                    android:textColorHint="@color/text_color_hint"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/location_icon_description"
+                    android:src="@drawable/location_icon" />
+
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="60dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/train_icon"
-                    android:contentDescription="@string/trainIconDescription" />
-
                 <EditText
-                    android:id="@+id/endLocation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:autofillHints=""
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:autofillHints="none"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:hint="@string/endLocation"
                     android:inputType="text"
-                    tools:ignore="LabelFor" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:orientation="horizontal">
+                    android:paddingBottom="1dp"
+                    android:textColorHint="@color/text_color_hint"
+                    android:textSize="16sp" />
 
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/date_icon"
-                    android:contentDescription="@string/dateIconDescription" />
-
-                <EditText
-                    android:id="@+id/date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:autofillHints=""
-                    android:inputType="datetime"
-                    tools:ignore="LabelFor" />
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/replace_directions_description"
+                    android:src="@drawable/change_arrows_icon" />
             </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/favoriteConnect"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/secondary"
+                android:fontFamily="@font/montserrat_medium"
+                android:text="@string/last_direction_button_text"
+                android:textColor="@color/text"
+                android:textSize="17sp"
+                android:focusable="true"
+                android:clickable="true"
+                app:backgroundTint="@color/secondary" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/searchButtonText"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="65dp"
                 android:layout_marginTop="10dp"
+                android:background="@color/primary"
                 android:fontFamily="@font/montserrat_medium"
                 android:text="@string/searchButtonText"
                 android:textColor="@color/text"
-                android:background="@color/primary"
+                android:textSize="17sp"
+                android:focusable="true"
+                android:clickable="true"
                 app:backgroundTint="@color/primary" />
         </LinearLayout>
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigationView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background"
+            app:itemIconTint="@color/white"
+            app:itemTextColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:menu="@menu/bottom_nav_menu" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

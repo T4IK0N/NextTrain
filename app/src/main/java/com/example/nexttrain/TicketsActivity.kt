@@ -8,9 +8,11 @@ import android.view.MenuItem
 import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 
-class MainActivity : AppCompatActivity() {
+class TicketsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -32,12 +34,12 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.home -> {
-                val intent = Intent(this@MainActivity, MainActivity::class.java)
+                val intent = Intent(this@TicketsActivity, MainActivity::class.java)
                 startActivity(intent)
                 true
             }
             R.id.tickets -> {
-                val intent = Intent(this@MainActivity, TicketsActivity::class.java)
+                val intent = Intent(this@TicketsActivity, TicketsActivity::class.java)
                 startActivity(intent)
                 true
             }
