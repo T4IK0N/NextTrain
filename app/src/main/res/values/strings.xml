@@ -10,4 +10,6 @@
     <!-- bottom nav menu -->
     <string name="home_menu">Home</string>
     <string name="tickets_menu">Tickets</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

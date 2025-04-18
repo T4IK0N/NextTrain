@@ -33,6 +33,8 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    buildToolsVersion = "35.0.0"
+    ndkVersion = "27.0.12077973"
 }
 
 dependencies {
@@ -45,4 +47,12 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.gson)
+
+    //calendar view
+    // The view calendar library for Android
+//    implementation("com.kizitonwose.calendar:view:<latest-version>")
+//    implementation("com.kizitonwose.calendar:view:2.3.0")
+    // The compose calendar library for Android
+//    implementation("com.kizitonwose.calendar:compose:<latest-version>")
 }
