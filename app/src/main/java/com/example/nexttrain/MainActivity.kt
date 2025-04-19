@@ -11,6 +11,8 @@ import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import com.chaquo.python.Python
+import com.chaquo.python.android.AndroidPlatform
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.text.DateFormat
 import java.text.DateFormat.getDateTimeInstance
@@ -56,7 +58,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @SuppressLint("SimpleDateFormat")
-    fun getCurrentTimestamp(): List<String> {
+    private fun getCurrentTimestamp(): List<String> {
         val tempCurrentDate = Date()
 
         val dateFormatter = SimpleDateFormat("dd.MM.yyyy")
@@ -72,7 +74,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun setChosenTimestampString(timestamp: String) {
+    private fun setChosenTimestampString(timestamp: String) {
         val sharedPreferences = getSharedPreferences("TimestampPrefs", MODE_PRIVATE)
         sharedPreferences.edit()
             .putString("timestamp", timestamp)

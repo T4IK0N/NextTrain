@@ -12,4 +12,7 @@
     <string name="tickets_menu">Tickets</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="timestamp_description">Timestamp Icon</string>
+    <string name="favorite_route_description">Favorite Route Icon</string>
+    <string name="direct_connection">Only Direct Connections?</string>
 </resources>

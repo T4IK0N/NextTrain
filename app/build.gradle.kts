@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.chaquo.python")
 }
 
 android {
@@ -15,6 +16,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters += listOf("arm64-v8a", "x86_64")
+        }
     }
 
     buildTypes {
@@ -35,6 +40,29 @@ android {
     }
     buildToolsVersion = "35.0.0"
     ndkVersion = "27.0.12077973"
+    buildFeatures {
+        viewBinding = true
+    }
+}
+
+chaquopy {
+    defaultConfig {
+        version = "3.13"
+
+        buildPython("D:\\Users\\Bogumil\\AppData\\Local\\Programs\\Python\\Python313\\python.exe") // jeśli potrzeba
+
+        pip {
+            install("requests")
+            install("numpy")
+            install("bs4")
+        }
+    }
+
+    sourceSets {
+        getByName("main") {
+            srcDir("src/main/python")
+        }
+    }
 }
 
 dependencies {
@@ -44,10 +72,13 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.recyclerview)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.gson)
+    implementation(libs.play.services.location)
 
     //calendar view
     // The view calendar library for Android
