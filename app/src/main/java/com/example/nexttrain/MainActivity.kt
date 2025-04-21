@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.WindowManager
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -20,6 +21,8 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var appNameTextView: TextView
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -31,6 +34,8 @@ class MainActivity : AppCompatActivity() {
             isAppearanceLightStatusBars = false
             isAppearanceLightNavigationBars = false
         }
+
+        appNameTextView = findViewById(R.id.appNameTextView)
 
         setChosenTimestampString(getCurrentTimestamp()[0])
 
@@ -44,12 +49,16 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragmentContainer, MainFragment())
                         .commit()
+                    appNameTextView.textSize = 35F
+                    appNameTextView.setText(R.string.app_name)
                     true
                 }
                 R.id.tickets -> {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragmentContainer, TicketsFragment())
                         .commit()
+                    appNameTextView.textSize = 35F
+                    appNameTextView.setText(R.string.app_name)
                     true
                 }
                 else -> false

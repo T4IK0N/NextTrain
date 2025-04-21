@@ -9,4 +9,5 @@
     <color name="accent">#e89b35</color>
     <color name="text_color_hint">#999999</color>
     <color name="half_transparent">#80000000</color>
+    <color name="red">#ff0000</color>
 </resources>

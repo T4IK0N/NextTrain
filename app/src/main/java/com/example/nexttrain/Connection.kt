@@ -1,6 +1,5 @@
 package com.example.nexttrain
 
-import android.content.Context
 import com.google.gson.annotations.SerializedName
 
 data class Connection(
@@ -10,14 +9,19 @@ data class Connection(
     @SerializedName("arrival_time") val arrivalTime: String?,
     @SerializedName("travel_time") val travelTime: String?,
     @SerializedName("transfers") val transfers: Int?,
-    @SerializedName("transport") val transport: List<String>?
+    @SerializedName("transport") val transport: List<String>?,
+    @SerializedName("delay") val delay: String?
 ) {
-    fun getTransportImageResource(context: Context): List<Int> {
+    fun getTransportImageResource(): List<Int> {
         val transportImages = mutableListOf<Int>()
         transport?.forEach { train ->
             val imageResId = when (train) {
                 "REGIO" -> R.drawable.regio
                 "IC" -> R.drawable.ic
+                "EIC" -> R.drawable.eic
+                "EIP" -> R.drawable.eip
+                "TLK" -> R.drawable.tlk
+                "KM" -> R.drawable.km
                 else -> R.drawable.default_train
             }
             transportImages.add(imageResId)

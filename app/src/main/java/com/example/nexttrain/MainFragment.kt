@@ -1,5 +1,6 @@
 package com.example.nexttrain
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Geocoder
@@ -14,6 +15,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -42,6 +44,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private lateinit var favoriteRouteButton: MaterialButton
     private lateinit var searchButton: MaterialButton
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -204,6 +207,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 parentFragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainer, connectionFragment)
                     .commit()
+
+
+                val appNameTextView = (activity as? MainActivity)?.findViewById<TextView>(R.id.appNameTextView)
+                if (appNameTextView != null) {
+                    appNameTextView.textSize = 25F
+                    appNameTextView.text = "${currentRoute.start} → ${currentRoute.end}"
+                }
 
                 // log result
 //                val outputList = result.asList()

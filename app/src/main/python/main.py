@@ -64,4 +64,4 @@ def main(save_path, from_station, to_station, date, time_str, direct):
 
     return results
 
-# main('D:/Programowanie/android/NextTrain/app/src/main/python/', 'Warszawa', 'Bialystok', '21.04.25', '10:45', False)
+# main('D:/Programowanie/android/NextTrain/app/src/main/python/', 'Warszawa', 'Szczecin', '21.04.25', '19:20', False)

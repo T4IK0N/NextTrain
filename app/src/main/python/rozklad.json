@@ -1,63 +1,82 @@
 [
     {
         "id": 1,
-        "station": "Warszawa Centralna-Białystok",
+        "station": "Warszawa Centralna-Szczecin Główny",
         "date": "21.04.25",
-        "departure_time": "10:15",
-        "arrival_time": "13:39",
-        "travel_time": "3:24",
-        "transfers": 1,
+        "departure_time": "15:00",
+        "arrival_time": "23:28",
+        "travel_time": "8:28",
+        "transfers": 0,
         "transport": [
             "TLK"
-        ]
+        ],
+        "prognosis": "ok. +15 min."
     },
     {
         "id": 2,
-        "station": "Warszawa Śródmieście PKP-Białystok",
+        "station": "Warszawa Centralna-Szczecin Główny",
         "date": "21.04.25",
-        "departure_time": "10:15",
-        "arrival_time": "13:39",
-        "travel_time": "3:24",
+        "departure_time": "15:30",
+        "arrival_time": "22:17",
+        "travel_time": "6:47",
         "transfers": 1,
         "transport": [
-            "Koleje Mazowieckie",
+            "IC",
             "TLK"
-        ]
+        ],
+        "prognosis": "prognozowany planowy przyjazd pociągu"
     },
     {
         "id": 3,
-        "station": "Warszawa Centralna-Białystok",
+        "station": "Warszawa Centralna-Szczecin Główny",
         "date": "21.04.25",
-        "departure_time": "11:55",
-        "arrival_time": "13:48",
-        "travel_time": "1:53",
+        "departure_time": "18:00",
+        "arrival_time": "22:21",
+        "travel_time": "4:21",
         "transfers": 0,
         "transport": [
-            "IC (Intercity)"
-        ]
+            "EIC"
+        ],
+        "prognosis": "ok. +5 min."
     },
     {
         "id": 4,
-        "station": "Warszawa Centralna-Białystok",
-        "date": "21.04.25",
-        "departure_time": "13:55",
-        "arrival_time": "15:48",
-        "travel_time": "1:53",
+        "station": "Warszawa Centralna-Szczecin Główny",
+        "date": "21.04.2522.04.25",
+        "departure_time": "22:50",
+        "arrival_time": "05:28",
+        "travel_time": "6:38",
         "transfers": 0,
         "transport": [
-            "IC (Intercity)"
-        ]
+            "IC"
+        ],
+        "prognosis": "wszystko okej"
     },
     {
         "id": 5,
-        "station": "Warszawa Centralna-Białystok",
-        "date": "21.04.25",
-        "departure_time": "15:55",
-        "arrival_time": "17:48",
-        "travel_time": "1:53",
+        "station": "Warszawa Centralna-Szczecin Główny",
+        "date": "21.04.2522.04.25",
+        "departure_time": "23:34",
+        "arrival_time": "07:21",
+        "travel_time": "7:47",
+        "transfers": 2,
+        "transport": [
+            "IC",
+            "IC"
+        ],
+        "prognosis": "prognozowany planowy przyjazd pociągu"
+    },
+    {
+        "id": 6,
+        "station": "Warszawa Centralna-Szczecin Główny",
+        "date": "22.04.25",
+        "departure_time": "05:30",
+        "arrival_time": "10:38",
+        "travel_time": "5:08",
         "transfers": 0,
         "transport": [
-            "IC (Intercity)"
-        ]
+            "IC"
+        ],
+        "prognosis": "wszystko okej"
     }
 ]
