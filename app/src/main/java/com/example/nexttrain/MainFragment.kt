@@ -1,7 +1,6 @@
 package com.example.nexttrain
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Bundle
@@ -16,6 +15,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.chaquo.python.PyObject
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
@@ -57,10 +58,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         searchButton = view.findViewById(R.id.searchButton)
 
         // prefs
-        val timestampPrefs = requireContext().getSharedPreferences("TimestampPrefs", Context.MODE_PRIVATE)
+        val timestampPrefs =
+            requireContext().getSharedPreferences("TimestampPrefs", Context.MODE_PRIVATE)
         val savedTimestamp = timestampPrefs.getString("timestamp", "brak")
 
-        val favoritePrefs = requireContext().getSharedPreferences("FavoritePrefs", Context.MODE_PRIVATE)
+        val favoritePrefs =
+            requireContext().getSharedPreferences("FavoritePrefs", Context.MODE_PRIVATE)
         val savedStart = favoritePrefs.getString("start", null)
         val savedEnd = favoritePrefs.getString("end", null)
         favoriteRoute = if (savedStart != null && savedEnd != null) {
@@ -84,7 +87,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             dialog.show(parentFragmentManager, "CalendarDialog")
         }
 
-        parentFragmentManager.setFragmentResultListener("timestampKey", viewLifecycleOwner) { _, bundle ->
+        parentFragmentManager.setFragmentResultListener(
+            "timestampKey",
+            viewLifecycleOwner
+        ) { _, bundle ->
             val timestamp = bundle.getString("timestamp")
             timestampTextView.text = timestamp
         }
@@ -102,7 +108,14 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 // set favorite route
                 val date = formatDate(timestampTextView.text.toString())
                 val time = formatTime(timestampTextView.text.toString())
-                favoriteRoute = Route(currentStart, currentEnd, timestampTextView.text.toString(), date, time, directConnectionCheckbox.isChecked)
+                favoriteRoute = Route(
+                    currentStart,
+                    currentEnd,
+                    timestampTextView.text.toString(),
+                    date,
+                    time,
+                    directConnectionCheckbox.isChecked
+                )
                 favoritePrefs.edit()
                     .putString("start", currentStart)
                     .putString("end", currentEnd)
@@ -143,7 +156,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             endLocationEditText.text = temp
         }
 
-        // Initialize Python
+        // python init
         if (!Python.isStarted()) {
             Python.start(AndroidPlatform(requireContext()))
         }
@@ -152,52 +165,91 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         searchButton.setOnClickListener {
             try {
-                val readdata = py.getModule("ReadData")
-
-                val filesDirPath = requireContext().filesDir.absolutePath  // np. /data/data/com.example.nexttrain/files
-
-                val result: PyObject = readdata.callAttr("main", filesDirPath)
-
-                // log result
-                val outputList = result.asList()
-                for (entry in outputList) {
-                    Log.e("READDATA", entry.toString())
+                if (startLocationEditText.text.isNullOrEmpty() || endLocationEditText.text.isNullOrEmpty()) {
+                    Toast.makeText(requireContext(), "start or end station doesnt have to be empty or null", Toast.LENGTH_SHORT).show()
+                    throw IllegalArgumentException("start or end station doesnt have to be empty or null")
                 }
 
+                if (startLocationEditText.text == endLocationEditText.text) {
+                    Toast.makeText(requireContext(), "start or end station doesnt have to be same", Toast.LENGTH_SHORT).show()
+                    throw IllegalArgumentException("start and end station doesnt have to be the same")
+                }
+
+                val main = py.getModule("main")
+
+                val filesDirPath = requireContext().filesDir.absolutePath
+                val currentRoute = getCurrentRoute()
+
+//                val result: PyObject = main.callAttr(
+//                    "main",
+//                    filesDirPath,
+//                    currentRoute.start,
+//                    currentRoute.end,
+//                    currentRoute.date,
+//                    currentRoute.time,
+//                    currentRoute.direct
+//                )
+
+                main.callAttr(
+                    "main",
+                    filesDirPath,
+                    currentRoute.start,
+                    currentRoute.end,
+                    currentRoute.date,
+                    currentRoute.time,
+                    currentRoute.direct
+                )
+
+                val connectionFragment = ConnectionFragment()
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainer, connectionFragment)
+                    .commit()
+
+                // log result
+//                val outputList = result.asList()
+//                for (entry in outputList) {
+//                    Log.e("MAIN", entry.toString())
+//
+//                    val connectionList = outputList.map { pyObj ->
+//                        val map: Map<PyObject, PyObject> = pyObj.asMap()
+//
+//                        Connection(
+//                            station = map[PyObject.fromJava("station")]?.toString() ?: "",
+//                            departureTime = map[PyObject.fromJava("departure_time")]?.toString() ?: "",
+//                            arrivalTime = map[PyObject.fromJava("arrival_time")]?.toString() ?: "",
+//                            travelTime = map[PyObject.fromJava("travel_time")]?.toString() ?: "",
+//                            transfers = map[PyObject.fromJava("transfers")]?.toString()?.toIntOrNull() ?: 0,
+//                            transport = map[PyObject.fromJava("transport")]?.asList()?.map { it.toString() } ?: emptyList()
+//                        )
+//                    }
+//
+//                    adapter = ConnectionAdapter(connectionList)
+//                    connectionRecyclerView.adapter = adapter
+//                }
+
             } catch (e: Exception) {
-                Log.e("PYTHON_ERROR", "Error calling Python script", e)
+                Log.e("PYTHON_ERROR", "error calling python script", e)
             }
         }
-
-//        searchButton.setOnClickListener {
-//            if (startLocationEditText.text.isNullOrEmpty() || endLocationEditText.text.isNullOrEmpty()) {
-//                Toast.makeText(requireContext(), "start or end station doesnt have to be empty or null", Toast.LENGTH_SHORT).show()
-//            }
-//            if (startLocationEditText.text == endLocationEditText.text) {
-//                Toast.makeText(requireContext(), "start or end station doesnt have to be same", Toast.LENGTH_SHORT).show()
-//            }
-//            Log.i("CURRENT ROUTE", getCurrentRoute().toString())
-//            Log.i("FAVORITE ROUTE", "$savedStart, $savedEnd")
-//        }
     }
 
     private fun formatDate(timestamp: String): String {
-        val sdf = SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH)
+        val sdf = SimpleDateFormat("dd.MM.yy", Locale.ENGLISH)
         return try {
-            val date = SimpleDateFormat("dd.MM.yyyy EEEE, HH:mm", Locale.ENGLISH).parse(timestamp)
+            val date = SimpleDateFormat("dd.MM.yy EEEE, HH:mm", Locale.ENGLISH).parse(timestamp)
             sdf.format(date!!)
         } catch (e: Exception) {
-            "Invalid date"
+            "invalid date"
         }
     }
 
     private fun formatTime(timestamp: String): String {
         val sdf = SimpleDateFormat("HH:mm", Locale.ENGLISH)
         return try {
-            val date = SimpleDateFormat("dd.MM.yyyy EEEE, HH:mm", Locale.ENGLISH).parse(timestamp)
+            val date = SimpleDateFormat("dd.MM.yy EEEE, HH:mm", Locale.ENGLISH).parse(timestamp)
             sdf.format(date!!)
         } catch (e: Exception) {
-            "Invalid time"
+            "invalid time"
         }
     }
 
@@ -252,7 +304,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 val longitude = location.longitude
                 getCityName(latitude, longitude)
             } else {
-                Log.e("Location", "Nie udało się uzyskać lokalizacji")
+                Log.e("Location", "nie ma lokalizacji")
             }
         }
     }
@@ -265,12 +317,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 val address = addresses[0]
                 currentCity = address.locality
                 startLocationEditText.setText(currentCity)
-//                Log.i("CurrentCity", "Aktualna miejscowość: $currentCity")
+//                Log.i("CurrentCity", "aktualna miejscowosc: $currentCity")
             } else {
-                Log.e("Location", "Nie udało się uzyskać nazwy miejscowości")
+                Log.e("Location", "nie ma nazwy miejscowosci")
             }
         } catch (e: Exception) {
-            Log.e("Location", "Błąd podczas geokodowania: ${e.message}")
+            Log.e("Location", "error podczas geokodowania: ${e.message}")
         }
     }
 }

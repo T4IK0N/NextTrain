@@ -47,7 +47,7 @@ class CalendarDialogFragment : DialogFragment() {
         // download from prefs
         if (savedTimestamp != null && savedTimestamp != "brak") {
             try {
-                val sdf = java.text.SimpleDateFormat("dd.MM.yyyy EEEE, HH:mm", Locale.ENGLISH)
+                val sdf = java.text.SimpleDateFormat("dd.MM.yy EEEE, HH:mm", Locale.ENGLISH)
                 val parsedDate = sdf.parse(savedTimestamp)
 
                 val calendar = java.util.Calendar.getInstance()
@@ -76,7 +76,7 @@ class CalendarDialogFragment : DialogFragment() {
             val dayOfWeekFormat = java.text.SimpleDateFormat("EEEE", Locale.ENGLISH)
             val formattedDay = dayOfWeekFormat.format(calendar.time)
 
-            val formattedDate = String.format("%02d.%02d.%d", datePicker.dayOfMonth, datePicker.month + 1, datePicker.year)
+            val formattedDate = String.format("%02d.%02d.%02d", datePicker.dayOfMonth, datePicker.month + 1, datePicker.year % 100)
             val formattedTime = String.format("%02d:%02d", timePicker.hour, timePicker.minute)
             val fullTimestamp = "$formattedDate $formattedDay, $formattedTime"
 
@@ -92,7 +92,7 @@ class CalendarDialogFragment : DialogFragment() {
         }
 
         // realtime changing date and time (not put to prefs cuz its not worth it)
-        val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.ENGLISH)
+        val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yy", Locale.ENGLISH)
         val dayFormatter = DateTimeFormatter.ofPattern("EEEE", Locale.ENGLISH)
 
         datePicker.setOnDateChangedListener { _, year, month, day ->

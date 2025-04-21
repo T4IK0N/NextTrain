@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
     private fun getCurrentTimestamp(): List<String> {
         val tempCurrentDate = Date()
 
-        val dateFormatter = SimpleDateFormat("dd.MM.yyyy")
+        val dateFormatter = SimpleDateFormat("dd.MM.yy")
         val timeFormatter = SimpleDateFormat("HH:mm")
         val dayFormatter = SimpleDateFormat("EEEE", java.util.Locale.ENGLISH)
 

@@ -1,61 +1,56 @@
 package com.example.nexttrain
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.nexttrain.placeholder.PlaceholderContent
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.chaquo.python.PyObject
+import com.chaquo.python.Python
+import com.chaquo.python.android.AndroidPlatform
+import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken
+import com.google.gson.Gson
+import java.io.InputStreamReader
 
-/**
- * A fragment representing a list of Items.
- */
-class ConnectionFragment : Fragment() {
+class ConnectionFragment : Fragment(R.layout.fragment_connection) {
 
-    private var columnCount = 1
+    private lateinit var connectionRecyclerView: RecyclerView
+    private lateinit var adapter: ConnectionAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        arguments?.let {
-            columnCount = it.getInt(ARG_COLUMN_COUNT)
+        connectionRecyclerView = view.findViewById(R.id.connectionRecyclerView)
+        connectionRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        val connectionList = readJsonFile(requireContext(), "rozklad.json")
+        Log.d("CONNECTION LIST", connectionList.toString())
+
+        if (connectionList != null) {
+            adapter = ConnectionAdapter(connectionList)
+            connectionRecyclerView.adapter = adapter
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_item_list, container, false)
+    private fun readJsonFile(context: Context, fileName: String): List<Connection>? {
+        return try {
+            val inputStream = context.openFileInput(fileName)
+            val reader = InputStreamReader(inputStream)
+            val gson = Gson()
 
-        // Set the adapter
-        if (view is RecyclerView) {
-            with(view) {
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(context)
-                    else -> GridLayoutManager(context, columnCount)
-                }
-                adapter = ConnectionRecyclerViewAdapter(PlaceholderContent.ITEMS)
-            }
+            val connectionListType = object : TypeToken<List<Connection>>() {}.type
+
+            gson.fromJson(reader, connectionListType)
+        } catch (e: Exception) {
+            Log.e("JSON_ERROR", "Error reading JSON file", e)
+            Toast.makeText(context, "Failed to load data", Toast.LENGTH_SHORT).show()
+            null
         }
-        return view
     }
 
-    companion object {
-
-        // TODO: Customize parameter argument names
-        const val ARG_COLUMN_COUNT = "column-count"
-
-        // TODO: Customize parameter initialization
-        @JvmStatic
-        fun newInstance(columnCount: Int) =
-            ConnectionFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_COLUMN_COUNT, columnCount)
-                }
-            }
-    }
 }

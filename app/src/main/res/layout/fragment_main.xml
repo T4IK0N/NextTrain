@@ -178,6 +178,15 @@
             android:layout_height="match_parent"
             android:background="#80000000"
             android:visibility="gone" />
+
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/connectionRecyclerView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:background="@color/background"-->
+<!--            app:layoutManager="LinearLayoutManager"-->
+<!--            tools:context=".ConnectionFragment"-->
+<!--            tools:listitem="@layout/fragment_connection_item" />-->
     </LinearLayout>
 
 </FrameLayout>

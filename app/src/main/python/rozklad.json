@@ -1,0 +1,63 @@
+[
+    {
+        "id": 1,
+        "station": "Warszawa Centralna-Białystok",
+        "date": "21.04.25",
+        "departure_time": "10:15",
+        "arrival_time": "13:39",
+        "travel_time": "3:24",
+        "transfers": 1,
+        "transport": [
+            "TLK"
+        ]
+    },
+    {
+        "id": 2,
+        "station": "Warszawa Śródmieście PKP-Białystok",
+        "date": "21.04.25",
+        "departure_time": "10:15",
+        "arrival_time": "13:39",
+        "travel_time": "3:24",
+        "transfers": 1,
+        "transport": [
+            "Koleje Mazowieckie",
+            "TLK"
+        ]
+    },
+    {
+        "id": 3,
+        "station": "Warszawa Centralna-Białystok",
+        "date": "21.04.25",
+        "departure_time": "11:55",
+        "arrival_time": "13:48",
+        "travel_time": "1:53",
+        "transfers": 0,
+        "transport": [
+            "IC (Intercity)"
+        ]
+    },
+    {
+        "id": 4,
+        "station": "Warszawa Centralna-Białystok",
+        "date": "21.04.25",
+        "departure_time": "13:55",
+        "arrival_time": "15:48",
+        "travel_time": "1:53",
+        "transfers": 0,
+        "transport": [
+            "IC (Intercity)"
+        ]
+    },
+    {
+        "id": 5,
+        "station": "Warszawa Centralna-Białystok",
+        "date": "21.04.25",
+        "departure_time": "15:55",
+        "arrival_time": "17:48",
+        "travel_time": "1:53",
+        "transfers": 0,
+        "transport": [
+            "IC (Intercity)"
+        ]
+    }
+]
