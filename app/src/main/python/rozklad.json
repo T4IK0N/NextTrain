@@ -2,60 +2,7 @@
     {
         "id": 1,
         "station": "Warszawa Centralna-Szczecin Główny",
-        "date": "21.04.25",
-        "departure_time": "15:00",
-        "arrival_time": "23:28",
-        "travel_time": "8:28",
-        "transfers": 0,
-        "transport": [
-            "TLK"
-        ],
-        "prognosis": "ok. +15 min."
-    },
-    {
-        "id": 2,
-        "station": "Warszawa Centralna-Szczecin Główny",
-        "date": "21.04.25",
-        "departure_time": "15:30",
-        "arrival_time": "22:17",
-        "travel_time": "6:47",
-        "transfers": 1,
-        "transport": [
-            "IC",
-            "TLK"
-        ],
-        "prognosis": "prognozowany planowy przyjazd pociągu"
-    },
-    {
-        "id": 3,
-        "station": "Warszawa Centralna-Szczecin Główny",
-        "date": "21.04.25",
-        "departure_time": "18:00",
-        "arrival_time": "22:21",
-        "travel_time": "4:21",
-        "transfers": 0,
-        "transport": [
-            "EIC"
-        ],
-        "prognosis": "ok. +5 min."
-    },
-    {
-        "id": 4,
-        "station": "Warszawa Centralna-Szczecin Główny",
-        "date": "21.04.2522.04.25",
-        "departure_time": "22:50",
-        "arrival_time": "05:28",
-        "travel_time": "6:38",
-        "transfers": 0,
-        "transport": [
-            "IC"
-        ],
-        "prognosis": "wszystko okej"
-    },
-    {
-        "id": 5,
-        "station": "Warszawa Centralna-Szczecin Główny",
-        "date": "21.04.2522.04.25",
+        "date": "22.04.2523.04.25",
         "departure_time": "23:34",
         "arrival_time": "07:21",
         "travel_time": "7:47",
@@ -64,12 +11,14 @@
             "IC",
             "IC"
         ],
-        "prognosis": "prognozowany planowy przyjazd pociągu"
+        "delay_departure": null,
+        "delay_arrival": null,
+        "href_ticket": null
     },
     {
-        "id": 6,
+        "id": 2,
         "station": "Warszawa Centralna-Szczecin Główny",
-        "date": "22.04.25",
+        "date": "23.04.25",
         "departure_time": "05:30",
         "arrival_time": "10:38",
         "travel_time": "5:08",
@@ -77,6 +26,39 @@
         "transport": [
             "IC"
         ],
-        "prognosis": "wszystko okej"
+        "delay_departure": null,
+        "delay_arrival": null,
+        "href_ticket": null
+    },
+    {
+        "id": 3,
+        "station": "Warszawa Centralna-Szczecin Główny",
+        "date": "23.04.25",
+        "departure_time": "06:30",
+        "arrival_time": "14:10",
+        "travel_time": "7:40",
+        "transfers": 0,
+        "transport": [
+            "IC"
+        ],
+        "delay_departure": null,
+        "delay_arrival": null,
+        "href_ticket": null
+    },
+    {
+        "id": 4,
+        "station": "Warszawa Centralna-Szczecin Główny",
+        "date": "23.04.25",
+        "departure_time": "07:00",
+        "arrival_time": "11:33",
+        "travel_time": "4:33",
+        "transfers": 1,
+        "transport": [
+            "EIC",
+            "IC"
+        ],
+        "delay_departure": null,
+        "delay_arrival": null,
+        "href_ticket": null
     }
 ]

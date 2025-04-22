@@ -1,6 +1,11 @@
 package com.example.nexttrain
 
 import android.annotation.SuppressLint
+import android.graphics.Color
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View.GONE
 import android.view.View.INVISIBLE
@@ -10,6 +15,7 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nexttrain.databinding.FragmentConnectionItemBinding
 
@@ -31,22 +37,73 @@ class ConnectionAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
 //      holder.stationName.text = item.station
-        holder.departureArrival.text = "${item.departureTime} → ${item.arrivalTime}"
-        if (item.delay != null) {
-            holder.delay.text = "${item.delay}, "
-        } else {
-            holder.delay.visibility = GONE
+//        item.delayDeparture?.let { Log.d("DELAY DEPARTURE ITTEM ONBINDVIEWHOLDER", it) }
+        val dep = "${item.departureTime}"
+        val arr = "${item.arrivalTime}"
+        val delayDep = item.delayDeparture ?: ""
+        val delayArr = item.delayArrival ?: ""
+
+        val text = "$dep$delayDep → $arr$delayArr"
+        val spannable = SpannableString(text)
+
+        val textColor = ContextCompat.getColor(holder.itemView.context, R.color.text)
+        val redColor = ContextCompat.getColor(holder.itemView.context, R.color.red)
+
+        spannable.setSpan(
+            ForegroundColorSpan(textColor),
+            0,
+            dep.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        var currentIndex = dep.length
+
+        if (delayDep.isNotEmpty()) {
+            spannable.setSpan(
+                ForegroundColorSpan(redColor),
+                currentIndex,
+                currentIndex + delayDep.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            currentIndex += delayDep.length
         }
+
+        spannable.setSpan(
+            ForegroundColorSpan(textColor),
+            currentIndex,
+            currentIndex + 3, // strzałka + spacje
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        currentIndex += 3
+
+        spannable.setSpan(
+            ForegroundColorSpan(textColor),
+            currentIndex,
+            currentIndex + arr.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        currentIndex += arr.length
+
+        if (delayArr.isNotEmpty()) {
+            spannable.setSpan(
+                ForegroundColorSpan(redColor),
+                currentIndex,
+                currentIndex + delayArr.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+
+        holder.departureArrival.text = spannable
 
         when (item.transfers) {
             0 -> {
                 holder.transfersTravel.text = "direct, ${item.travelTime}h"
             }
             1 -> {
-                holder.transfersTravel.text = "${item.transfers} transfer, ${item.travelTime}h"
+                holder.transfersTravel.text = "${item.transfers} change, ${item.travelTime}h"
             }
             else -> {
-                holder.transfersTravel.text = "${item.transfers} transfers, ${item.travelTime}h"
+                holder.transfersTravel.text = "${item.transfers} chages, ${item.travelTime}h"
             }
         }
 
@@ -66,7 +123,6 @@ class ConnectionAdapter(
         val transfersTravel: TextView = binding.transfersTravel
 //        val transportTypes: TextView = binding.transportTypes
         val transportImagesContainer: LinearLayout = binding.transportImagesContainer
-        val delay: TextView = binding.delay
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -81,7 +137,10 @@ class ConnectionAdapter(
             val originalWidth = drawable.intrinsicWidth
             val originalHeight = drawable.intrinsicHeight
 
-            val newHeight = 75
+            var newHeight = 75
+            if (imageResId == R.drawable.regio) {
+                newHeight = 65
+            }
             val newWidth = ((originalWidth * newHeight.toFloat()) / originalHeight.toFloat()).toInt()
 
             val layoutParams = LinearLayout.LayoutParams(newWidth, newHeight)

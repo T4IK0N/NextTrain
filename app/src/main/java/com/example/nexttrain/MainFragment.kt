@@ -77,6 +77,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             null
         }
 
+        val appNameTextView = (activity as? MainActivity)?.findViewById<TextView>(R.id.appNameTextView)
+        if (appNameTextView != null) {
+            appNameTextView.textSize = 35F
+            appNameTextView.text = "NextTrain"
+        }
+
         locationImageView.setOnClickListener {
             getLocation()
         }
@@ -183,16 +189,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 val filesDirPath = requireContext().filesDir.absolutePath
                 val currentRoute = getCurrentRoute()
 
-//                val result: PyObject = main.callAttr(
-//                    "main",
-//                    filesDirPath,
-//                    currentRoute.start,
-//                    currentRoute.end,
-//                    currentRoute.date,
-//                    currentRoute.time,
-//                    currentRoute.direct
-//                )
-
                 main.callAttr(
                     "main",
                     filesDirPath,
@@ -206,36 +202,14 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 val connectionFragment = ConnectionFragment()
                 parentFragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainer, connectionFragment)
+                    .addToBackStack(null)
                     .commit()
 
 
-                val appNameTextView = (activity as? MainActivity)?.findViewById<TextView>(R.id.appNameTextView)
                 if (appNameTextView != null) {
                     appNameTextView.textSize = 25F
                     appNameTextView.text = "${currentRoute.start} → ${currentRoute.end}"
                 }
-
-                // log result
-//                val outputList = result.asList()
-//                for (entry in outputList) {
-//                    Log.e("MAIN", entry.toString())
-//
-//                    val connectionList = outputList.map { pyObj ->
-//                        val map: Map<PyObject, PyObject> = pyObj.asMap()
-//
-//                        Connection(
-//                            station = map[PyObject.fromJava("station")]?.toString() ?: "",
-//                            departureTime = map[PyObject.fromJava("departure_time")]?.toString() ?: "",
-//                            arrivalTime = map[PyObject.fromJava("arrival_time")]?.toString() ?: "",
-//                            travelTime = map[PyObject.fromJava("travel_time")]?.toString() ?: "",
-//                            transfers = map[PyObject.fromJava("transfers")]?.toString()?.toIntOrNull() ?: 0,
-//                            transport = map[PyObject.fromJava("transport")]?.asList()?.map { it.toString() } ?: emptyList()
-//                        )
-//                    }
-//
-//                    adapter = ConnectionAdapter(connectionList)
-//                    connectionRecyclerView.adapter = adapter
-//                }
 
             } catch (e: Exception) {
                 Log.e("PYTHON_ERROR", "error calling python script", e)

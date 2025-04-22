@@ -6,22 +6,36 @@ class ParseTable:
         self.station = f"{row.select('.clear-lowres')[0].text.strip()}-{row.select('.clear-lowres')[1].text.strip()}"
         self.date = row.select('td')[2].text.strip()
         self.departure_time = row.select('.clear-lowres')[2].select('span')[2].text.strip()
-        prognosis_element = row.select_one('.prognosis')
+        prognosis_elements = row.select('.prognosis')
 
-        if prognosis_element is not None:
-            span_element = prognosis_element.select_one('span')
+        prognosis_departure = prognosis_elements[0] if len(prognosis_elements) > 0 else None
+        prognosis_arrival = prognosis_elements[1] if len(prognosis_elements) > 1 else None
+
+        if prognosis_departure is not None:
+            span_element = prognosis_departure.select_one('span')
             if span_element:
-                # self.delay = span_element.text.strip()
-                # if self.delay.startswith("ok. "):
-                self.delay = span_element.text.strip()[:-1] #dot
+                self.delay_departure = span_element.text.strip()[4:-5] #ok. & dot
             else:
-                img_element = prognosis_element.select_one('img')
+                img_element = prognosis_departure.select_one('img')
                 if img_element:
-                    self.delay = None
+                    self.delay_departure = None
                 else:
-                    self.delay = None
+                    self.delay_departure = None
         else:
-            self.delay = "nie ma prognosis"
+            self.delay_departure = None #nie ma prognosis
+
+        if prognosis_arrival is not None:
+            span_element = prognosis_arrival.select_one('span')
+            if span_element:
+                self.delay_arrival = span_element.text.strip()[4:-5] #ok. & dot
+            else:
+                img_element = prognosis_arrival.select_one('img')
+                if img_element:
+                    self.delay_arrival = None
+                else:
+                    self.delay_arrival = None
+        else:
+            self.delay_arrival = None #nie ma prognosis
 
         self.arrival_time = row.select('.clear-lowres')[3].select('span')[2].text.strip()
         self.travel_time = row.select('td')[4].text.strip()
@@ -43,6 +57,19 @@ class ParseTable:
             for transport in transport_list if img["src"].endswith(transport["src"])
         ]
 
+        self.href = None
+    #     print(row.select('td')[7])
+    #
+    # def href_check(self, row):
+    #     # if len(self.transport_names) == 1 and self.transport_names[0] == "REGIO":
+    #     a_tag = row.select('td')[7].select_one('a')
+    #     if a_tag and a_tag.has_attr('href'):
+    #         return a_tag['href']
+    #         # cut_index = href.find("*/")
+    #         # if cut_index != -1:
+    #         #     self.href = href[:cut_index]
+    #     # if row.select('td')[7].select_one('a')
+
     def direct_check(self, direct):
         if direct and int(self.transfers) > 0:
             return True
@@ -58,7 +85,9 @@ class ParseTable:
             "travel_time": self.travel_time,
             "transfers": int(self.transfers),
             "transport": self.transport_names,
-            "delay": self.delay
+            "delay_departure": self.delay_departure,
+            "delay_arrival": self.delay_arrival,
+            "href_ticket": self.href
         }
         
     def __str__(self):
@@ -70,5 +99,7 @@ class ParseTable:
             f"Czas przejazdu: {self.travel_time}\n"
             f"Ilość przesiadek: {int(self.transfers)}\n"
             f"Środek transportu: {self.transport_names}\n"
-            f"Delay: {self.delay}"
+            f"Delay Departure: {self.delay_departure}\n"
+            f"Delay Arrival: {self.delay_arrival}\n"
+            f"Href Ticket: {self.href}"
         )

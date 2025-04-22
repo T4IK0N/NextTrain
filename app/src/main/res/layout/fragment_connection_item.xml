@@ -37,29 +37,14 @@
                 android:layout_marginBottom="2dp"
                 android:textSize="22sp" />
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/transfersTravel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/delay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins"
-                    android:text="Delay"
-                    android:textColor="@color/red"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/transfersTravel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins"
-                    android:text="Transfers and travel time"
-                    android:textColor="@color/text"
-                    android:textSize="15sp" />
-            </LinearLayout>
+                android:fontFamily="@font/poppins"
+                android:text="Transfers and travel time"
+                android:textColor="@color/text"
+                android:textSize="15sp" />
 
 <!--            <TextView-->
 <!--                android:id="@+id/transportTypes"-->

@@ -10,7 +10,8 @@ data class Connection(
     @SerializedName("travel_time") val travelTime: String?,
     @SerializedName("transfers") val transfers: Int?,
     @SerializedName("transport") val transport: List<String>?,
-    @SerializedName("delay") val delay: String?
+    @SerializedName("delay_departure") val delayDeparture: String?,
+    @SerializedName("delay_arrival") val delayArrival: String?
 ) {
     fun getTransportImageResource(): List<Int> {
         val transportImages = mutableListOf<Int>()
