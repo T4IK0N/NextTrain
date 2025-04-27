@@ -212,11 +212,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
                 bottomNavigationView.selectedItemId = R.id.search
 
-                if (appNameTextView != null) {
-                    appNameTextView.textSize = 25F
-                    appNameTextView.text = "${currentRoute.start} → ${currentRoute.end}"
-                }
-
             } catch (e: Exception) {
                 Log.e("PYTHON_ERROR", "error calling python script", e)
             }

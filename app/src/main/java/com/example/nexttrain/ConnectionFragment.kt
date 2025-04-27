@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,6 +31,13 @@ class ConnectionFragment : Fragment(R.layout.fragment_connection) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val currentRoute = getCurrentRoute()
+
+        val appNameTextView = (activity as? MainActivity)?.findViewById<TextView>(R.id.appNameTextView)
+        if (appNameTextView != null) {
+            appNameTextView.textSize = 25F
+            appNameTextView.text = "${currentRoute.start} → ${currentRoute.end}"
+        }
         connectionRecyclerView = view.findViewById(R.id.connectionRecyclerView)
         progressBar = view.findViewById(R.id.progressBar)
 
@@ -43,7 +51,7 @@ class ConnectionFragment : Fragment(R.layout.fragment_connection) {
             val connectionList = loadDataInBackground()
 
             if (connectionList != null) {
-                adapter = ConnectionAdapter(connectionList, getCurrentRoute().date)
+                adapter = ConnectionAdapter(connectionList, currentRoute.date)
                 connectionRecyclerView.adapter = adapter
 
                 // Po załadowaniu danych
