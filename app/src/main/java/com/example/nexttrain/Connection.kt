@@ -5,13 +5,15 @@ import com.google.gson.annotations.SerializedName
 data class Connection(
     @SerializedName("id") val id: Int?,
     @SerializedName("station") val station: String?,
+    @SerializedName("date") val date: String?,
+    @SerializedName("travel_time") val travelTime: String?,
     @SerializedName("departure_time") val departureTime: String?,
     @SerializedName("arrival_time") val arrivalTime: String?,
-    @SerializedName("travel_time") val travelTime: String?,
     @SerializedName("transfers") val transfers: Int?,
     @SerializedName("transport") val transport: List<String>?,
     @SerializedName("delay_departure") val delayDeparture: String?,
-    @SerializedName("delay_arrival") val delayArrival: String?
+    @SerializedName("delay_arrival") val delayArrival: String?,
+    var isNewDateDividerVisible: Boolean = false
 ) {
     fun getTransportImageResource(): List<Int> {
         val transportImages = mutableListOf<Int>()

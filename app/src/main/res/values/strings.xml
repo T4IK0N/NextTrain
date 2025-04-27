@@ -15,4 +15,6 @@
     <string name="timestamp_description">Timestamp Icon</string>
     <string name="favorite_route_description">Favorite Route Icon</string>
     <string name="direct_connection">Only Direct Connections?</string>
+    <string name="search_more_button">Search More</string>
+    <string name="search_menu">Search</string>
 </resources>

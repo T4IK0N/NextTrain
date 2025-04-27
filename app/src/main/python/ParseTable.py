@@ -5,6 +5,13 @@ class ParseTable:
     def __init__(self, row):
         self.station = f"{row.select('.clear-lowres')[0].text.strip()}-{row.select('.clear-lowres')[1].text.strip()}"
         self.date = row.select('td')[2].text.strip()
+        pattern = r"(\d{2}\.\d{2}\.\d{2})(\d{2}\.\d{2}\.\d{2})"
+        match = re.match(pattern, self.date)
+        if match:
+            date1 = match.group(1)
+            date2 = match.group(2)
+            self.date = f"{date1}-{date2}"
+
         self.departure_time = row.select('.clear-lowres')[2].select('span')[2].text.strip()
         prognosis_elements = row.select('.prognosis')
 

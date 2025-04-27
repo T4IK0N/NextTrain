@@ -7,8 +7,10 @@ import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.View.GONE
 import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
@@ -20,7 +22,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.nexttrain.databinding.FragmentConnectionItemBinding
 
 class ConnectionAdapter(
-    private val values: List<Connection>
+    private var connectionList: List<Connection>,
+    private var date: String?
 ) : RecyclerView.Adapter<ConnectionAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -35,9 +38,7 @@ class ConnectionAdapter(
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = values[position]
-//      holder.stationName.text = item.station
-//        item.delayDeparture?.let { Log.d("DELAY DEPARTURE ITTEM ONBINDVIEWHOLDER", it) }
+        val item = connectionList[position]
         val dep = "${item.departureTime}"
         val arr = "${item.arrivalTime}"
         val delayDep = item.delayDeparture ?: ""
@@ -96,26 +97,25 @@ class ConnectionAdapter(
         holder.departureArrival.text = spannable
 
         when (item.transfers) {
-            0 -> {
-                holder.transfersTravel.text = "direct, ${item.travelTime}h"
-            }
-            1 -> {
-                holder.transfersTravel.text = "${item.transfers} change, ${item.travelTime}h"
-            }
-            else -> {
-                holder.transfersTravel.text = "${item.transfers} chages, ${item.travelTime}h"
-            }
+            0 -> holder.transfersTravel.text = "direct, ${item.travelTime}h"
+            1 -> holder.transfersTravel.text = "${item.transfers} change, ${item.travelTime}h"
+            else -> holder.transfersTravel.text = "${item.transfers} chages, ${item.travelTime}h"
         }
 
-        // Set transport types (only as text for now)
-//        holder.transportTypes.text = item.transport?.joinToString()
-
-        // Add transport images to the container using the method getTransportImageResource
         val transportImages = item.getTransportImageResource()
         addTransportImages(holder.transportImagesContainer, transportImages)
+
+        if (position == 0 || item.date != connectionList[position - 1].date) {
+            holder.dividerView.visibility = GONE
+            holder.newDateDivider.visibility = VISIBLE
+            holder.newDateDividerTextView.text = item.date
+        } else {
+            holder.dividerView.visibility = VISIBLE
+            holder.newDateDivider.visibility = GONE
+        }
     }
 
-    override fun getItemCount(): Int = values.size
+    override fun getItemCount(): Int = connectionList.size
 
     inner class ViewHolder(binding: FragmentConnectionItemBinding) : RecyclerView.ViewHolder(binding.root) {
         //        val stationName: TextView = binding.stationName
@@ -123,6 +123,9 @@ class ConnectionAdapter(
         val transfersTravel: TextView = binding.transfersTravel
 //        val transportTypes: TextView = binding.transportTypes
         val transportImagesContainer: LinearLayout = binding.transportImagesContainer
+        val dividerView: View = binding.dividerView
+        val newDateDivider: LinearLayout = binding.newDateDivider
+        val newDateDividerTextView: TextView = binding.newDateDividerTextView
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -149,5 +152,11 @@ class ConnectionAdapter(
             imageView.setPadding(0, 0, 8, 0)
             container.addView(imageView)
         }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateData(newData: List<Connection>) {
+        connectionList = newData
+        notifyDataSetChanged()
     }
 }

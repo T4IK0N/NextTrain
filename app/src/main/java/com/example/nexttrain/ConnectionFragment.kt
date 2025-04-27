@@ -5,55 +5,188 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.chaquo.python.PyObject
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
 import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.InputStreamReader
 
 class ConnectionFragment : Fragment(R.layout.fragment_connection) {
 
     private lateinit var connectionRecyclerView: RecyclerView
+    private lateinit var progressBar: ProgressBar
     private lateinit var adapter: ConnectionAdapter
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         connectionRecyclerView = view.findViewById(R.id.connectionRecyclerView)
+        progressBar = view.findViewById(R.id.progressBar)
+
         connectionRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        val connectionList = readJsonFile(requireContext(), "rozklad.json")
-        Log.d("CONNECTION LIST", connectionList.toString())
+        // Ukryj RecyclerView na start
+        connectionRecyclerView.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
 
-        if (connectionList != null) {
-            adapter = ConnectionAdapter(connectionList)
-            connectionRecyclerView.adapter = adapter
+        lifecycleScope.launch {
+            val connectionList = loadDataInBackground()
+
+            if (connectionList != null) {
+                adapter = ConnectionAdapter(connectionList, getCurrentRoute().date)
+                connectionRecyclerView.adapter = adapter
+
+                // Po załadowaniu danych
+                progressBar.visibility = View.GONE
+                connectionRecyclerView.visibility = View.VISIBLE
+
+                setupRecyclerViewScroll()
+            } else {
+                Toast.makeText(requireContext(),
+                    "Failed to load data", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
-    private fun readJsonFile(context: Context, fileName: String): List<Connection>? {
+    private fun getCurrentRoute(): Route {
+        val routePrefs = requireContext().getSharedPreferences("RoutePrefs",
+            Context.MODE_PRIVATE)
+        return Route(
+            routePrefs.getString("start", "") ?: "",
+            routePrefs.getString("end", "") ?: "",
+            routePrefs.getString("timestamp", "") ?: "",
+            routePrefs.getString("date", "") ?: "",
+            routePrefs.getString("time", "") ?: "",
+            routePrefs.getBoolean("direct", false)
+        )
+    }
+
+    private suspend fun loadDataInBackground(): List<Connection>? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val currentRoute = getCurrentRoute()
+
+                // Python init
+                if (!Python.isStarted()) {
+                    Python.start(AndroidPlatform(requireContext()))
+                }
+
+                val py = Python.getInstance()
+                val main = py.getModule("main")
+                val filesDirPath = requireContext().filesDir.absolutePath
+
+                main.callAttr(
+                    "main",
+                    filesDirPath,
+                    currentRoute.start,
+                    currentRoute.end,
+                    currentRoute.date,
+                    currentRoute.time,
+                    currentRoute.direct
+                )
+
+                main.callAttr(
+                    "fetch_next_trains",
+                    filesDirPath,
+                    currentRoute.start,
+                    currentRoute.end,
+                    currentRoute.direct
+                )
+
+                readJsonFile(requireContext())
+            } catch (e: Exception) {
+                Log.e("LOAD_ERROR", "Error loading data", e)
+                null
+            }
+        }
+    }
+
+    private fun setupRecyclerViewScroll() {
+        connectionRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            private var isLoading = false
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                if (dy > 0) {
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val visibleItemCount = layoutManager.childCount
+                    val totalItemCount = layoutManager.itemCount
+                    val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+
+                    if (!isLoading) {
+                        if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount - 2) {
+                            loadMoreData()
+                            isLoading = true
+                        }
+                    }
+                }
+            }
+
+            private fun loadMoreData() {
+                lifecycleScope.launch {
+                    val currentConnections = readJsonFile(requireContext())
+
+                    if (currentConnections != null && currentConnections.size > 10) {
+                        //wiecej niz 10 bo jeszcze raz pobierze
+                        Toast.makeText(requireContext(),
+                            "Nie można pobrać więcej pociągów",Toast.LENGTH_SHORT).show()
+                        isLoading = false
+                        return@launch
+                    }
+
+                    withContext(Dispatchers.IO) {
+                        val py = Python.getInstance()
+                        val main = py.getModule("main")
+                        val filesDirPath = requireContext().filesDir.absolutePath
+
+                        val routePrefs =requireContext().getSharedPreferences("RoutePrefs",
+                            Context.MODE_PRIVATE)
+                        val start = routePrefs.getString("start", "") ?: ""
+                        val end = routePrefs.getString("end", "") ?: ""
+                        val direct = routePrefs.getBoolean("direct", false)
+
+                        main.callAttr(
+                            "fetch_next_trains",
+                            filesDirPath,
+                            start,
+                            end,
+                            direct
+                        )
+                    }
+
+                    val newConnectionList = readJsonFile(requireContext())
+                    if (newConnectionList != null) {
+                        adapter.updateData(newConnectionList)
+                    }
+
+                    isLoading = false
+                }
+            }
+        })
+    }
+
+    private fun readJsonFile(context: Context,): List<Connection>? {
         return try {
-            val inputStream = context.openFileInput(fileName)
+            val inputStream = context.openFileInput("rozklad.json")
             val reader = InputStreamReader(inputStream)
             val gson = Gson()
 
             val connectionListType = object : TypeToken<List<Connection>>() {}.type
-
             gson.fromJson(reader, connectionListType)
         } catch (e: Exception) {
             Log.e("JSON_ERROR", "Error reading JSON file", e)
-            Toast.makeText(context, "Failed to load data", Toast.LENGTH_SHORT).show()
             null
         }
     }
-
 }

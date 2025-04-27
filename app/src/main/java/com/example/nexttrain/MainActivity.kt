@@ -28,6 +28,8 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
+        val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottomNavigationView)
+
         window.navigationBarColor = resources.getColor(R.color.background, theme)
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         WindowCompat.getInsetsController(window, window.decorView).apply {
@@ -43,7 +45,7 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.fragmentContainer, MainFragment())
             .commit()
 
-        findViewById<BottomNavigationView>(R.id.bottomNavigationView).setOnItemSelectedListener {
+        bottomNavigationView.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.home -> {
                     supportFragmentManager.beginTransaction()
@@ -59,6 +61,12 @@ class MainActivity : AppCompatActivity() {
                         .commit()
                     appNameTextView.textSize = 35F
                     appNameTextView.setText(R.string.app_name)
+                    true
+                }
+                R.id.search -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, ConnectionFragment())
+                        .commit()
                     true
                 }
                 else -> false

@@ -24,6 +24,7 @@ import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -69,6 +70,21 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             requireContext().getSharedPreferences("FavoritePrefs", Context.MODE_PRIVATE)
         val savedStart = favoritePrefs.getString("start", null)
         val savedEnd = favoritePrefs.getString("end", null)
+
+        val routePrefs =
+            requireContext().getSharedPreferences("RoutePrefs", Context.MODE_PRIVATE)
+
+        setCurrentRoute( // default on start fragment
+            Route(
+                routePrefs.getString("start", "") ?: "",
+                routePrefs.getString("end", "") ?: "",
+                routePrefs.getString("timestamp", "") ?: "",
+                routePrefs.getString("date", "") ?: "",
+                routePrefs.getString("time", "") ?: "",
+                routePrefs.getBoolean("direct", false)
+            )
+        )
+
         favoriteRoute = if (savedStart != null && savedEnd != null) {
             val date = savedTimestamp?.let { formatDate(it) }
             val time = savedTimestamp?.let { formatTime(it) }
@@ -140,8 +156,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             favoriteRoute?.let {
                 startLocationEditText.setText(it.start)
                 endLocationEditText.setText(it.end)
-                timestampTextView.text = it.timestamp
-                directConnectionCheckbox.isChecked = it.direct
                 updateFavoriteIcon()
             }
         }
@@ -165,13 +179,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             endLocationEditText.text = temp
         }
 
-        // python init
-        if (!Python.isStarted()) {
-            Python.start(AndroidPlatform(requireContext()))
-        }
-
-        val py = Python.getInstance()
-
         searchButton.setOnClickListener {
             try {
                 if (startLocationEditText.text.isNullOrEmpty() || endLocationEditText.text.isNullOrEmpty()) {
@@ -184,27 +191,26 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                     throw IllegalArgumentException("start and end station doesnt have to be the same")
                 }
 
-                val main = py.getModule("main")
-
-                val filesDirPath = requireContext().filesDir.absolutePath
                 val currentRoute = getCurrentRoute()
 
-                main.callAttr(
-                    "main",
-                    filesDirPath,
-                    currentRoute.start,
-                    currentRoute.end,
-                    currentRoute.date,
-                    currentRoute.time,
-                    currentRoute.direct
-                )
+                routePrefs.edit()
+                    .putString("start", currentRoute.start)
+                    .putString("end", currentRoute.end)
+                    .putString("timestamp", currentRoute.timestamp)
+                    .putString("date", currentRoute.date)
+                    .putString("time", currentRoute.time)
+                    .putBoolean("direct", currentRoute.direct)
+                    .apply()
 
                 val connectionFragment = ConnectionFragment()
+
                 parentFragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainer, connectionFragment)
                     .addToBackStack(null)
                     .commit()
 
+                val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+                bottomNavigationView.selectedItemId = R.id.search
 
                 if (appNameTextView != null) {
                     appNameTextView.textSize = 25F
@@ -215,6 +221,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 Log.e("PYTHON_ERROR", "error calling python script", e)
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
     }
 
     private fun formatDate(timestamp: String): String {
@@ -259,14 +270,14 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         )
     }
 
-    //    fun setCurrentRoute(route: Route) {
-    //        startLocationEditText.setText(route.start)
-    //        endLocationEditText.setText(route.end)
-    //        timestampTextView.text = route.timestamp
-    //        directConnectionCheckbox.isChecked = route.direct
-    //
-    //        updateFavoriteIcon()
-    //    }
+        fun setCurrentRoute(route: Route) {
+            startLocationEditText.setText(route.start)
+            endLocationEditText.setText(route.end)
+            timestampTextView.text = route.timestamp
+            directConnectionCheckbox.isChecked = route.direct
+
+            updateFavoriteIcon()
+        }
 
     private fun getLocation() {
         // check if u have permissions
