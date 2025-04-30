@@ -43,7 +43,6 @@ class ConnectionFragment : Fragment(R.layout.fragment_connection) {
 
         connectionRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        // Ukryj RecyclerView na start
         connectionRecyclerView.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
 
@@ -54,7 +53,6 @@ class ConnectionFragment : Fragment(R.layout.fragment_connection) {
                 adapter = ConnectionAdapter(connectionList, currentRoute.date)
                 connectionRecyclerView.adapter = adapter
 
-                // Po załadowaniu danych
                 progressBar.visibility = View.GONE
                 connectionRecyclerView.visibility = View.VISIBLE
 

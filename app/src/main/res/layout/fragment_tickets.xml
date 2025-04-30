@@ -3,12 +3,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/background"
     tools:context=".TicketsFragment">
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/pdfButton"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="65dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/secondary"
+        app:backgroundTint="@color/secondary"
+        android:fontFamily="@font/montserrat_medium"
+        android:text="pdf"
+        android:textColor="@color/text"
+        android:textSize="17sp"
+        android:focusable="true"
+        android:clickable="true"
+        android:backgroundTint="@color/secondary" />
 
+    <ImageView
+        android:id="@+id/qrImageView"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center"
+        android:scaleType="fitCenter"
+        android:contentDescription="QR Code Preview" />
 </FrameLayout>

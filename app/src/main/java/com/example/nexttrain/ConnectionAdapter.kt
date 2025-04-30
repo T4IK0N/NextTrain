@@ -22,8 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.nexttrain.databinding.FragmentConnectionItemBinding
 
 class ConnectionAdapter(
-    private var connectionList: List<Connection>,
-    private var date: String?
+    private var connectionList: List<Connection>
 ) : RecyclerView.Adapter<ConnectionAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

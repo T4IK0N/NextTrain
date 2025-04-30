@@ -75,11 +75,14 @@ dependencies {
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.recyclerview)
     implementation(libs.firebase.crashlytics.buildtools)
+    implementation(libs.barcode.scanning.v1710) // wersja z modelem offline
+    implementation("com.tom_roush:pdfbox-android:2.0.27.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.gson)
     implementation(libs.play.services.location)
+//    implementation(libs.barcode.scanning)
 
     //calendar view
     // The view calendar library for Android
