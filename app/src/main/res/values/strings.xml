@@ -17,4 +17,6 @@
     <string name="direct_connection">Only Direct Connections?</string>
     <string name="search_more_button">Search More</string>
     <string name="search_menu">Search</string>
+    <string name="qr_code_preview">QR Code Preview</string>
+    <string name="search_for_tickets">Search For Tickets</string>
 </resources>

@@ -50,7 +50,7 @@ class ConnectionFragment : Fragment(R.layout.fragment_connection) {
             val connectionList = loadDataInBackground()
 
             if (connectionList != null) {
-                adapter = ConnectionAdapter(connectionList, currentRoute.date)
+                adapter = ConnectionAdapter(connectionList)
                 connectionRecyclerView.adapter = adapter
 
                 progressBar.visibility = View.GONE

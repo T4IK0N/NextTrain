@@ -76,7 +76,7 @@ dependencies {
     implementation(libs.androidx.recyclerview)
     implementation(libs.firebase.crashlytics.buildtools)
     implementation(libs.barcode.scanning.v1710) // wersja z modelem offline
-    implementation("com.tom_roush:pdfbox-android:2.0.27.0")
+    implementation(libs.pdfbox.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
