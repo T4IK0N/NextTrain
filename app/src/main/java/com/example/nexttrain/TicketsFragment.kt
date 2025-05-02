@@ -48,10 +48,11 @@ class TicketsFragment : Fragment(R.layout.fragment_tickets) {
 
 //        openPdfPicker()
 
-        val pdfButton: MaterialButton = view.findViewById(R.id.pdfButton)
-        pdfButton.setOnClickListener {
-            openPdfPicker()
-        }
+//        val pdfButton: MaterialButton = view.findViewById(R.id.pdfButton)
+//        pdfButton.setOnClickListener {
+//            openPdfPicker()
+//        }
+        openPdfPicker()
     }
 
     private fun openPdfPicker() {
@@ -83,20 +84,6 @@ class TicketsFragment : Fragment(R.layout.fragment_tickets) {
             val document = PDDocument.load(pdfFile)
             val pdfStripper = PDFTextStripper()
             val extractedTextFromPdf = pdfStripper.getText(document)
-
-//            val normalny = Regex("""Normalny:\s*(\d+)""").find(extractedTextFromPdf)?.groupValues?.get(1)?.toIntOrNull() ?: 0
-//            val ulgowy = Regex("""Ulgowy.*?:\s*(\d+)""").find(extractedTextFromPdf)?.groupValues?.get(1)?.toIntOrNull() ?: 0
-//
-//            val trasa = Regex("""\* \* ([\p{L} ]+?)\s+([\p{L} ]+?) \* \*""").find(extractedTextFromPdf)?.let {
-//                "${it.groupValues[1].trim()}-${it.groupValues[2].trim()}"
-//            } ?: "Brak trasy"
-//
-//            val dataWaznosci = Regex("""Ważny (\d{2}\.\d{2}\.\d{4})""").find(extractedTextFromPdf)?.groupValues?.get(1) ?: ""
-//            val godzinaOdjazdu = Regex("""Bilet ważny 3 godzin od (\d{2}:\d{2})""").find(extractedTextFromPdf)?.groupValues?.get(1) ?: ""
-//            val pociagNr = Regex("""Train REGIO No\. (\d+)""").find(extractedTextFromPdf)?.groupValues?.get(1) ?: ""
-//
-//            val wlasciciel = Regex("""Właściciel: (.+)""").find(extractedTextFromPdf)?.groupValues?.get(1) ?: ""
-//            val cena = Regex("""Opłata za przejazd: ([\d,\.]+) zł""").find(extractedTextFromPdf)?.groupValues?.get(1)?.replace(",", ".")?.toDoubleOrNull() ?: 0.0
 
             val ticketText: String = extractedTextFromPdf // już wczytany wcześniej
             val ticket: TicketData = parseTicketText(ticketText)
@@ -145,23 +132,23 @@ class TicketsFragment : Fragment(R.layout.fragment_tickets) {
         scanner.process(image)
             .addOnSuccessListener { barcodes ->
                 if (barcodes.isNotEmpty()) {
-                    val barcode = barcodes[0] // pierwszy znaleziony
+                    val barcode = barcodes[0] // tylko pierwszy znaleziony
 
                     barcode.boundingBox?.let { boundingBox ->
                         try {
-                            val qrBitmap = Bitmap.createBitmap(
-                                bitmap,
-                                boundingBox.left.coerceAtLeast(0),
-                                boundingBox.top.coerceAtLeast(0),
-                                boundingBox.width().coerceAtMost(bitmap.width - boundingBox.left),
-                                boundingBox.height().coerceAtMost(bitmap.height - boundingBox.top)
-                            )
+                            val padding = 15
+
+                            val left = (boundingBox.left - padding).coerceAtLeast(0)
+                            val top = (boundingBox.top - padding).coerceAtLeast(0)
+                            val right = (boundingBox.right + padding).coerceAtMost(bitmap.width)
+                            val bottom = (boundingBox.bottom + padding).coerceAtMost(bitmap.height)
+
+                            val width = right - left
+                            val height = bottom - top
+
+                            val qrBitmap = Bitmap.createBitmap(bitmap, left, top, width, height)
 
                             qrImageView.setImageBitmap(qrBitmap)
-
-//                            Log.e("VALUE TYPE", "Code detected: ${barcode.valueType}")
-//                            Log.e("FORMAT TYPE", "Code detected: ${barcode.format}")
-
                         } catch (e: Exception) {
                             e.printStackTrace()
                             Toast.makeText(requireContext(), "Failed to crop code", Toast.LENGTH_SHORT).show()
@@ -283,7 +270,7 @@ class TicketsFragment : Fragment(R.layout.fragment_tickets) {
         view?.findViewById<TextView>(R.id.type)?.text = ticket.type
         view?.findViewById<TextView>(R.id.normalTicket)?.text = "Normalny: ${ticket.normalTicket}"
         view?.findViewById<TextView>(R.id.reducedTicket)?.text = "Ulgowy (76): ${ticket.reducedTicket}"
-        view?.findViewById<TextView>(R.id.discount)?.text = "${ticket.discountCategory} ${ticket.discountPercent}"
+        view?.findViewById<TextView>(R.id.discount)?.text = "${ticket.discountCategory} ${ticket.discountPercent}%"
         view?.findViewById<TextView>(R.id.carrier)?.text = "Przewoźnik: ${ticket.carrier}"
         view?.findViewById<TextView>(R.id.trainType)?.text = "Typ pociągu: ${ticket.trainType}"
         view?.findViewById<TextView>(R.id.price)?.text = "Cena: ${ticket.price} PLN"
