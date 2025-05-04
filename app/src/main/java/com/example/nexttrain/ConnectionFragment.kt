@@ -23,6 +23,7 @@ import java.io.InputStreamReader
 
 class ConnectionFragment : Fragment(R.layout.fragment_connection) {
 
+    private lateinit var appNameTextView: TextView
     private lateinit var connectionRecyclerView: RecyclerView
     private lateinit var progressBar: ProgressBar
     private lateinit var adapter: ConnectionAdapter
@@ -33,11 +34,9 @@ class ConnectionFragment : Fragment(R.layout.fragment_connection) {
 
         val currentRoute = getCurrentRoute()
 
-        val appNameTextView = (activity as? MainActivity)?.findViewById<TextView>(R.id.appNameTextView)
-        if (appNameTextView != null) {
-            appNameTextView.textSize = 25F
-            appNameTextView.text = "${currentRoute.start} → ${currentRoute.end}"
-        }
+        appNameTextView = view.findViewById(R.id.appNameTextView)
+        appNameTextView.text = "${currentRoute.start} → ${currentRoute.end}"
+
         connectionRecyclerView = view.findViewById(R.id.connectionRecyclerView)
         progressBar = view.findViewById(R.id.progressBar)
 

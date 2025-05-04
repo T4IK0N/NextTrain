@@ -1,27 +1,18 @@
 package com.example.nexttrain
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
-import com.chaquo.python.Python
-import com.chaquo.python.android.AndroidPlatform
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import java.text.DateFormat
-import java.text.DateFormat.getDateTimeInstance
 import java.text.SimpleDateFormat
 import java.util.Date
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var appNameTextView: TextView
+//    private lateinit var appNameTextView: TextView
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +28,7 @@ class MainActivity : AppCompatActivity() {
             isAppearanceLightNavigationBars = false
         }
 
-        appNameTextView = findViewById(R.id.appNameTextView)
+//        appNameTextView = findViewById(R.id.appNameTextView)
 
         setChosenTimestampString(getCurrentTimestamp()[0])
 
@@ -51,22 +42,22 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragmentContainer, MainFragment())
                         .commit()
-                    appNameTextView.textSize = 35F
-                    appNameTextView.setText(R.string.app_name)
-                    true
-                }
-                R.id.tickets -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragmentContainer, TicketsFragment())
-                        .commit()
-                    appNameTextView.textSize = 35F
-                    appNameTextView.setText(R.string.app_name)
+//                    appNameTextView.textSize = 35F
+//                    appNameTextView.setText(R.string.app_name)
                     true
                 }
                 R.id.search -> {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragmentContainer, ConnectionFragment())
                         .commit()
+                    true
+                }
+                R.id.tickets -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, TicketFragment())
+                        .commit()
+//                    appNameTextView.textSize = 35F
+//                    appNameTextView.setText(R.string.app_name)
                     true
                 }
                 else -> false

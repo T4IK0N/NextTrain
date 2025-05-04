@@ -93,11 +93,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             null
         }
 
-        val appNameTextView = (activity as? MainActivity)?.findViewById<TextView>(R.id.appNameTextView)
-        if (appNameTextView != null) {
-            appNameTextView.textSize = 35F
-            appNameTextView.text = "NextTrain"
-        }
+//        val appNameTextView = (activity as? MainActivity)?.findViewById<TextView>(R.id.appNameTextView)
+//        if (appNameTextView != null) {
+//            appNameTextView.textSize = 35F
+//            appNameTextView.text = "NextTrain"
+//        }
 
         locationImageView.setOnClickListener {
             getLocation()

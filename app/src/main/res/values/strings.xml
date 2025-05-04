@@ -19,4 +19,11 @@
     <string name="search_menu">Search</string>
     <string name="qr_code_preview">QR Code Preview</string>
     <string name="search_for_tickets">Search For Tickets</string>
+    <string name="ticket_manager_menu">Ticket Manager</string>
+    <string name="upload_ticket_text">Upload Ticket</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="ticketsAppName">Active Tickets</string>
+    <string name="ticketManagerDescription">Ticket Manager</string>
+    <string name="ticketManagerName">Ticket\'s Manager</string>
 </resources>

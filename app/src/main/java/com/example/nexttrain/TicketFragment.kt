@@ -1,12 +1,16 @@
 package com.example.nexttrain
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.pdf.PdfRenderer
 import android.net.Uri
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.View.GONE
@@ -14,22 +18,34 @@ import android.view.View.VISIBLE
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+//import android.widget.Toolbar
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.ActionBarDrawerToggle
 import com.google.android.material.button.MaterialButton
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
-import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
 import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.text.PDFTextStripper
 import java.io.File
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
+import androidx.drawerlayout.widget.DrawerLayout
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationView
 
-class TicketsFragment : Fragment(R.layout.fragment_tickets) {
+class TicketFragment : Fragment(R.layout.fragment_ticket) {
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navigationView: NavigationView
+    private lateinit var toolbar: Toolbar
     private lateinit var qrImageView: ImageView
     private val pdfPickerLauncher = registerForActivityResult(
-        ActivityResultContracts.OpenDocument()
-    ) { uri ->
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val uri = result.data?.data
         uri?.let { handlePickedPdf(it) }
     }
 
@@ -37,33 +53,73 @@ class TicketsFragment : Fragment(R.layout.fragment_tickets) {
         super.onViewCreated(view, savedInstanceState)
         // np. lista biletów albo coś innego
 
-        val appNameTextView =
-            (activity as? MainActivity)?.findViewById<TextView>(R.id.appNameTextView)
-        if (appNameTextView != null) {
-            appNameTextView.textSize = 25F
-            appNameTextView.text = "Active Tickets"
+        qrImageView = view.findViewById(R.id.qrImageView)
+        drawerLayout = view.findViewById(R.id.drawerLayout);
+        navigationView = view.findViewById(R.id.nav_view);
+        toolbar = view.findViewById(R.id.toolbar);
+
+        navigationView.setNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.action_chose -> {
+                    openPdfPicker()
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    true
+                }
+                else -> false
+            }
         }
 
-        qrImageView = view.findViewById(R.id.qrImageView)
+//        burgerMenu implement
+        (activity as? MainActivity)?.setSupportActionBar(toolbar)
+        val toggle = ActionBarDrawerToggle((activity as? MainActivity), drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+//        val bottomNav = (activity as? MainActivity)?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        drawerLayout.addDrawerListener(toggle)
+//        drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+//            var isHidden = false
+//
+//            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+//                if (!isHidden && slideOffset > 0f) {
+//                    bottomNav?.visibility = GONE
+//                    isHidden = true
+//                }
+//            }
+//
+//            override fun onDrawerOpened(drawerView: View) {}
+//
+//            override fun onDrawerClosed(drawerView: View) {
+//                bottomNav?.visibility = VISIBLE
+//                isHidden = false
+//            }
+//
+//            override fun onDrawerStateChanged(newState: Int) {}
+//        })
 
-//        openPdfPicker()
+        toggle.syncState()
 
-//        val pdfButton: MaterialButton = view.findViewById(R.id.pdfButton)
-//        pdfButton.setOnClickListener {
-//            openPdfPicker()
-//        }
-        openPdfPicker()
+        //earlier ticket
+        val savedTicket = File(requireContext().filesDir, "tickets/last_ticket.pdf")
+        if (savedTicket.exists()) {
+            renderFirstPageFromPdf(savedTicket)
+        }
     }
 
-    private fun openPdfPicker() {
-        val mimeTypes = arrayOf("application/pdf")
-        pdfPickerLauncher.launch(mimeTypes)
+    private fun openPdfPicker() { //is used but dumbass didn't see that g:65
+        val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+            type = "application/pdf"
+            addCategory(Intent.CATEGORY_OPENABLE)
+            putExtra(Intent.EXTRA_LOCAL_ONLY, true)
+        }
+        pdfPickerLauncher.launch(intent)
     }
+
 
     private fun handlePickedPdf(uri: Uri) {
         try {
             val inputStream = requireContext().contentResolver.openInputStream(uri)
-            val pdfFile = File(requireContext().cacheDir, "temp_selected.pdf")
+            val ticketsDir = File(requireContext().filesDir, "tickets")
+            if (!ticketsDir.exists()) ticketsDir.mkdirs()
+
+            val pdfFile = File(ticketsDir, "last_ticket.pdf")
             inputStream?.use { input ->
                 pdfFile.outputStream().use { output ->
                     input.copyTo(output)
@@ -274,6 +330,6 @@ class TicketsFragment : Fragment(R.layout.fragment_tickets) {
         view?.findViewById<TextView>(R.id.carrier)?.text = "Przewoźnik: ${ticket.carrier}"
         view?.findViewById<TextView>(R.id.trainType)?.text = "Typ pociągu: ${ticket.trainType}"
         view?.findViewById<TextView>(R.id.price)?.text = "Cena: ${ticket.price} PLN"
-        view?.findViewById<TextView>(R.id.travelDistance)?.text = "Distance: ${ticket.travelDistance} KM"
+        view?.findViewById<TextView>(R.id.travelDistance)?.text = "Dystans: ${ticket.travelDistance} KM"
     }
 }
