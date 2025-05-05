@@ -5,11 +5,13 @@
     android:orientation="vertical"
     android:paddingHorizontal="8dp">
 
+    <!-- first divider -->
     <LinearLayout
         android:id="@+id/newDateDivider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginBottom="-10dp"
         android:gravity="center_vertical">
 
         <View
@@ -37,7 +39,7 @@
 
     </LinearLayout>
 
-
+    <!-- second divider -->
     <View
         android:visibility="gone"
         android:id="@+id/dividerView"
@@ -58,15 +60,6 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:layout_weight="3">
-
-<!--            <TextView-->
-<!--                android:id="@+id/stationName"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:textColor="@color/text"-->
-<!--                android:fontFamily="@font/montserrat_medium"-->
-<!--                android:text="Station Name"-->
-<!--                android:textSize="17sp" />-->
 
             <TextView
                 android:id="@+id/departureArrival"

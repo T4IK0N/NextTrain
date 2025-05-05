@@ -16,6 +16,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 //import android.widget.Toolbar
@@ -30,6 +31,7 @@ import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.text.PDFTextStripper
 import java.io.File
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -72,27 +74,7 @@ class TicketFragment : Fragment(R.layout.fragment_ticket) {
 //        burgerMenu implement
         (activity as? MainActivity)?.setSupportActionBar(toolbar)
         val toggle = ActionBarDrawerToggle((activity as? MainActivity), drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-//        val bottomNav = (activity as? MainActivity)?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         drawerLayout.addDrawerListener(toggle)
-//        drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
-//            var isHidden = false
-//
-//            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
-//                if (!isHidden && slideOffset > 0f) {
-//                    bottomNav?.visibility = GONE
-//                    isHidden = true
-//                }
-//            }
-//
-//            override fun onDrawerOpened(drawerView: View) {}
-//
-//            override fun onDrawerClosed(drawerView: View) {
-//                bottomNav?.visibility = VISIBLE
-//                isHidden = false
-//            }
-//
-//            override fun onDrawerStateChanged(newState: Int) {}
-//        })
 
         toggle.syncState()
 
@@ -103,7 +85,7 @@ class TicketFragment : Fragment(R.layout.fragment_ticket) {
         }
     }
 
-    private fun openPdfPicker() { //is used but dumbass didn't see that g:65
+    private fun openPdfPicker() {
         val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
             type = "application/pdf"
             addCategory(Intent.CATEGORY_OPENABLE)
@@ -169,7 +151,6 @@ class TicketFragment : Fragment(R.layout.fragment_ticket) {
 
             pdfRenderer.close()
             fileDescriptor.close()
-
         } catch (e: Exception) {
             e.printStackTrace()
             Toast.makeText(requireContext(), "Failed to render PDF", Toast.LENGTH_SHORT).show()
