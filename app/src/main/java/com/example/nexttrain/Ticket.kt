@@ -1,6 +1,6 @@
 package com.example.nexttrain
 
-data class TicketData(
+data class Ticket(
     val type: String = "", // "PRZEJAZD TAM", "MIESIĘCZNY T/P" lub "MIESIĘCZNY TAM"
     val normalTicket: Int = 0,
     val reducedTicket: Int = 0,

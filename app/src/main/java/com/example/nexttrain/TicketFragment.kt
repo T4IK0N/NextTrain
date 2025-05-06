@@ -8,21 +8,15 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
 import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-//import android.widget.Toolbar
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
-import com.google.android.material.button.MaterialButton
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
@@ -31,12 +25,8 @@ import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.text.PDFTextStripper
 import java.io.File
 import androidx.appcompat.widget.Toolbar
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
 import androidx.drawerlayout.widget.DrawerLayout
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 
 class TicketFragment : Fragment(R.layout.fragment_ticket) {
@@ -71,14 +61,14 @@ class TicketFragment : Fragment(R.layout.fragment_ticket) {
             }
         }
 
-//        burgerMenu implement
+        // burgerMenu implement
         (activity as? MainActivity)?.setSupportActionBar(toolbar)
         val toggle = ActionBarDrawerToggle((activity as? MainActivity), drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawerLayout.addDrawerListener(toggle)
 
         toggle.syncState()
 
-        //earlier ticket
+        // earlier ticket
         val savedTicket = File(requireContext().filesDir, "tickets/last_ticket.pdf")
         if (savedTicket.exists()) {
             renderFirstPageFromPdf(savedTicket)
@@ -124,7 +114,7 @@ class TicketFragment : Fragment(R.layout.fragment_ticket) {
             val extractedTextFromPdf = pdfStripper.getText(document)
 
             val ticketText: String = extractedTextFromPdf // już wczytany wcześniej
-            val ticket: TicketData = parseTicketText(ticketText)
+            val ticket: Ticket = parseTicketText(ticketText)
 
             document.close()
 
@@ -201,7 +191,7 @@ class TicketFragment : Fragment(R.layout.fragment_ticket) {
             }
     }
 
-    private fun parseTicketText(text: String): TicketData {
+    private fun parseTicketText(text: String): Ticket {
         val normalTicket = Regex("""Normalny:\s*(\d+)""").find(text)?.groupValues?.get(1)?.toIntOrNull() ?: 0
         val reducedTicket = Regex("""Ulgowy.*?:\s*(\d+)""").find(text)?.groupValues?.get(1)?.toIntOrNull() ?: 0
 
@@ -241,7 +231,7 @@ class TicketFragment : Fragment(R.layout.fragment_ticket) {
         val periodicMatch = Regex("""Ważny od (\d{2}\.\d{2}\.\d{4}) do (\d{2}\.\d{2}\.\d{4})""").find(text)
 
         return if (periodicMatch != null) {
-            TicketData( // okresowy
+            Ticket( // okresowy
                 type = typeForPeriodicIfExist, //2
                 normalTicket = normalTicket, //2
                 reducedTicket = reducedTicket, //2
@@ -265,7 +255,7 @@ class TicketFragment : Fragment(R.layout.fragment_ticket) {
             val departureTime = Regex("""Bilet ważny 3 godzin od (\d{2}:\d{2})""").find(text)?.groupValues?.get(1)
             val trainNumber = Regex("""Train REGIO No\. (\d+)""").find(text)?.groupValues?.get(1)
 
-            TicketData( // jednorazowy
+            Ticket( // jednorazowy
                 type = "PRZEJAZD TAM",
                 normalTicket = normalTicket,
                 reducedTicket = reducedTicket,
@@ -288,9 +278,9 @@ class TicketFragment : Fragment(R.layout.fragment_ticket) {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun updateTicketUI(ticket: TicketData) {
+    private fun updateTicketUI(ticket: Ticket) {
         if (ticket.type == "PRZEJAZD TAM") {
-            //mimo ze takie id to trudno sie mowi
+            // mimo ze takie id to trudno sie mowi
             view?.findViewById<TextView>(R.id.startDate)?.text = "Ważny do: ${ticket.validityDate}" //validity date
             view?.findViewById<TextView>(R.id.endDate)?.text = "Data odjazdu: ${ticket.departureTime}" //departure time
             val trainNumber = view?.findViewById<TextView>(R.id.trainNumber)

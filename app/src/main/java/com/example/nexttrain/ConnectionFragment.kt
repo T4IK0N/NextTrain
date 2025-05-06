@@ -88,7 +88,7 @@ class ConnectionFragment : Fragment(R.layout.fragment_connection) {
             try {
                 val currentRoute = getCurrentRoute()
 
-                // Python init
+                // python init
                 if (!Python.isStarted()) {
                     Python.start(AndroidPlatform(requireContext()))
                 }
@@ -124,69 +124,6 @@ class ConnectionFragment : Fragment(R.layout.fragment_connection) {
     }
 
     private fun setupRecyclerViewScroll() {
-//        connectionRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-//            private var isLoading = false
-//
-//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                super.onScrolled(recyclerView, dx, dy)
-//
-//                if (dy > 0) {
-//                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-//                    val visibleItemCount = layoutManager.childCount
-//                    val totalItemCount = layoutManager.itemCount
-//                    val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
-//
-//                    if (!isLoading) {
-//                        if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount - 2) {
-//                            loadMoreData()
-//                            isLoading = true
-//                        }
-//                    }
-//                }
-//            }
-//
-//            private fun loadMoreData() {
-//                lifecycleScope.launch {
-//                    val currentConnections = readJsonFile(requireContext())
-//
-//                    if (currentConnections != null && currentConnections.size > 10) {
-//                        //wiecej niz 10 bo jeszcze raz pobierze
-//                        Toast.makeText(requireContext(),
-//                            "Nie można pobrać więcej pociągów",Toast.LENGTH_SHORT).show()
-//                        isLoading = false
-//                        return@launch
-//                    }
-//
-//                    withContext(Dispatchers.IO) {
-//                        val py = Python.getInstance()
-//                        val main = py.getModule("main")
-//                        val filesDirPath = requireContext().filesDir.absolutePath
-//
-//                        val routePrefs =requireContext().getSharedPreferences("RoutePrefs",
-//                            Context.MODE_PRIVATE)
-//                        val start = routePrefs.getString("start", "") ?: ""
-//                        val end = routePrefs.getString("end", "") ?: ""
-//                        val direct = routePrefs.getBoolean("direct", false)
-//
-//                        main.callAttr(
-//                            "fetch_next_trains",
-//                            filesDirPath,
-//                            start,
-//                            end,
-//                            direct
-//                        )
-//                    }
-//
-//                    val newConnectionList = readJsonFile(requireContext())
-//                    if (newConnectionList != null) {
-//                        adapter.updateData(newConnectionList)
-//                    }
-//
-//                    isLoading = false
-//                }
-//            }
-//        })
-
         searchMoreButton.setOnClickListener {
             var isLoading = false
 
@@ -200,7 +137,7 @@ class ConnectionFragment : Fragment(R.layout.fragment_connection) {
                     val currentConnections = readJsonFile(requireContext())
 
                     if (currentConnections != null && currentConnections.size > 10) {
-                        //wiecej niz 10 bo jeszcze raz pobierze
+                        // wiecej niz 10 bo jeszcze raz pobierze
                         Toast.makeText(requireContext(),
                             "Nie można pobrać więcej pociągów",Toast.LENGTH_SHORT).show()
                         isLoading = false

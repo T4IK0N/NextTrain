@@ -15,13 +15,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.chaquo.python.PyObject
-import com.chaquo.python.Python
-import com.chaquo.python.android.AndroidPlatform
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -92,12 +86,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         } else {
             null
         }
-
-//        val appNameTextView = (activity as? MainActivity)?.findViewById<TextView>(R.id.appNameTextView)
-//        if (appNameTextView != null) {
-//            appNameTextView.textSize = 35F
-//            appNameTextView.text = "NextTrain"
-//        }
 
         locationImageView.setOnClickListener {
             getLocation()
@@ -302,12 +290,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private fun getCityName(latitude: Double, longitude: Double) {
         val geocoder = Geocoder(requireContext(), Locale.getDefault())
         try {
+            @Suppress("DEPRECATION")
             val addresses = geocoder.getFromLocation(latitude, longitude, 1)
             if (!addresses.isNullOrEmpty()) {
                 val address = addresses[0]
                 currentCity = address.locality
                 startLocationEditText.setText(currentCity)
-//                Log.i("CurrentCity", "aktualna miejscowosc: $currentCity")
             } else {
                 Log.e("Location", "nie ma nazwy miejscowosci")
             }

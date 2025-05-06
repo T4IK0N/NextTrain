@@ -3,7 +3,6 @@ package com.example.nexttrain
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.WindowManager
-import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -12,7 +11,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 class MainActivity : AppCompatActivity() {
-//    private lateinit var appNameTextView: TextView
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,8 +26,6 @@ class MainActivity : AppCompatActivity() {
             isAppearanceLightNavigationBars = false
         }
 
-//        appNameTextView = findViewById(R.id.appNameTextView)
-
         setChosenTimestampString(getCurrentTimestamp()[0])
 
         supportFragmentManager.beginTransaction()
@@ -42,8 +38,6 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragmentContainer, MainFragment())
                         .commit()
-//                    appNameTextView.textSize = 35F
-//                    appNameTextView.setText(R.string.app_name)
                     true
                 }
                 R.id.search -> {
@@ -56,8 +50,6 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragmentContainer, TicketFragment())
                         .commit()
-//                    appNameTextView.textSize = 35F
-//                    appNameTextView.setText(R.string.app_name)
                     true
                 }
                 else -> false

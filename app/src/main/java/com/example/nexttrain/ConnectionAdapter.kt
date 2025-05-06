@@ -1,19 +1,14 @@
 package com.example.nexttrain
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
-import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -117,10 +112,8 @@ class ConnectionAdapter(
     override fun getItemCount(): Int = connectionList.size
 
     inner class ViewHolder(binding: FragmentConnectionItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        //        val stationName: TextView = binding.stationName
         val departureArrival: TextView = binding.departureArrival
         val transfersTravel: TextView = binding.transfersTravel
-//        val transportTypes: TextView = binding.transportTypes
         val transportImagesContainer: LinearLayout = binding.transportImagesContainer
         val dividerView: View = binding.dividerView
         val newDateDivider: LinearLayout = binding.newDateDivider
