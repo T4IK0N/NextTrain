@@ -3,9 +3,9 @@ NextTrain is an Android application designed to help users search for train conn
 
 ## Screenshots
 <div style="display: flex; justify-content: space-between;">
-  <img src="https://github.com/user-attachments/assets/74b36628-ceba-479c-a8fe-085048cd2071" width="33%" />
-  <img src="https://github.com/user-attachments/assets/f320a78a-f23a-4819-8754-d7e00ae0e457" width="33%" />
-  <img src="https://github.com/user-attachments/assets/17d0594c-45c0-4067-90a1-3698036aaf9d" width="33%" />
+  <img src="https://github.com/user-attachments/assets/74b36628-ceba-479c-a8fe-085048cd2071" width="32%" />
+  <img src="https://github.com/user-attachments/assets/f320a78a-f23a-4819-8754-d7e00ae0e457" width="32%" />
+  <img src="https://github.com/user-attachments/assets/17d0594c-45c0-4067-90a1-3698036aaf9d" width="32%" />
 </div>
 
 ## Downloads
