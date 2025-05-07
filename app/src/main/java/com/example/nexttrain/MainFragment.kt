@@ -262,28 +262,25 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             updateFavoriteIcon()
         }
 
+    @SuppressLint("MissingPermission")
     private fun getLocation() {
-        // check if u have permissions
-        // !!! in manifest.permission u have to add android. before
         if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // request for permissions
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                100
-            )
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 100)
             return
         }
 
-        fusedLocationClient.lastLocation.addOnCompleteListener(requireActivity()) { task ->
-            val location = task.result
+        fusedLocationClient.getCurrentLocation(
+            com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY,
+            null
+        ).addOnSuccessListener { location ->
             if (location != null) {
-                val latitude = location.latitude
-                val longitude = location.longitude
-                getCityName(latitude, longitude)
+                getCityName(location.latitude, location.longitude)
             } else {
-                Log.e("Location", "nie ma lokalizacji")
+                Log.e("Location", "Brak dostępnej lokalizacji")
+                Toast.makeText(requireContext(), "Brak dostępnej lokalizacji", Toast.LENGTH_SHORT).show()
             }
+        }.addOnFailureListener {
+            Log.e("Location", "Błąd pobierania lokalizacji: ${it.message}")
         }
     }
 
