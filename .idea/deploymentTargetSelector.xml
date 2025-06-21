@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="CoolAppBuild">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-04-21T09:57:56.525625200Z">
+        <DropdownSelection timestamp="2025-05-07T12:07:55.400467800Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=R5CWB1JMW1L" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Bogumil\.android\avd\Samsung_S22_Copy.avd" />
             </handle>
           </Target>
         </DropdownSelection>

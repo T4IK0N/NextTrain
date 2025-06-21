@@ -87,6 +87,7 @@ class ConnectionFragment : Fragment(R.layout.fragment_connection) {
         return withContext(Dispatchers.IO) {
             try {
                 val currentRoute = getCurrentRoute()
+                Log.e("CURRENT ROUTE", currentRoute.toString())
 
                 // python init
                 if (!Python.isStarted()) {

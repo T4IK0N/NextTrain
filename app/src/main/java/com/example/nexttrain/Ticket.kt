@@ -13,10 +13,13 @@ data class Ticket(
     val discountCategory: String = "",
     val discountPercent: Int = 0,
     val travelDistance: Int = 0,
-    val startDate: String?, // tylko dla okresowego
-    val endDate: String?, // tylko dla okresowego
-    val validityDate: String?, // tylko dla jednorazowego
-    val departureTime: String?, // tylko dla jednorazowego
-    val trainNumber: String? // tylko dla jednorazowego
+    val startDate: String? = null, // tylko dla okresowego
+    val endDate: String? = null, // tylko dla okresowego
+    val validityDate: String? = null, // tylko dla jednorazowego
+    val departureTime: String? = null, // tylko dla jednorazowego
+    val trainNumber: String? = null, // tylko dla jednorazowego
+    val seatNumber: String? = null, // tylko dla intercity
+    val classNumber: Int? = null, // tylko dla intercity
+    val trainCarNumber: Int? = null, // tylko dla intercity
+    val trainCarType: String? = null, // tylko dla intercity
 )
-
