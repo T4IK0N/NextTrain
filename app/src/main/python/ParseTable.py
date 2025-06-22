@@ -1,6 +1,7 @@
 import re
 from bs4 import BeautifulSoup
 
+
 class ParseTable:
     def __init__(self, row):
         self.station = f"{row.select('.clear-lowres')[0].text.strip()}-{row.select('.clear-lowres')[1].text.strip()}"
@@ -21,7 +22,7 @@ class ParseTable:
         if prognosis_departure is not None:
             span_element = prognosis_departure.select_one('span')
             if span_element:
-                self.delay_departure = span_element.text.strip()[4:-5] #ok. & dot
+                self.delay_departure = span_element.text.strip()[4:-5]  # ok. & dot
             else:
                 img_element = prognosis_departure.select_one('img')
                 if img_element:
@@ -29,12 +30,12 @@ class ParseTable:
                 else:
                     self.delay_departure = None
         else:
-            self.delay_departure = None #nie ma prognosis
+            self.delay_departure = None  # nie ma prognosis
 
         if prognosis_arrival is not None:
             span_element = prognosis_arrival.select_one('span')
             if span_element:
-                self.delay_arrival = span_element.text.strip()[4:-5] #ok. & dot
+                self.delay_arrival = span_element.text.strip()[4:-5]  # ok. & dot
             else:
                 img_element = prognosis_arrival.select_one('img')
                 if img_element:
@@ -42,7 +43,7 @@ class ParseTable:
                 else:
                     self.delay_arrival = None
         else:
-            self.delay_arrival = None #nie ma prognosis
+            self.delay_arrival = None  # nie ma prognosis
 
         self.arrival_time = row.select('.clear-lowres')[3].select('span')[2].text.strip()
         self.travel_time = row.select('td')[4].text.strip()
@@ -63,8 +64,6 @@ class ParseTable:
             transport["transport"] for img in transports
             for transport in transport_list if img["src"].endswith(transport["src"])
         ]
-
-        self.href = None
     #     print(row.select('td')[7])
     #
     # def href_check(self, row):
@@ -93,10 +92,9 @@ class ParseTable:
             "transfers": int(self.transfers),
             "transport": self.transport_names,
             "delay_departure": self.delay_departure,
-            "delay_arrival": self.delay_arrival,
-            "href_ticket": self.href
+            "delay_arrival": self.delay_arrival
         }
-        
+
     def __str__(self):
         return (
             f"Stacja: {self.station}\n"
@@ -108,5 +106,4 @@ class ParseTable:
             f"Środek transportu: {self.transport_names}\n"
             f"Delay Departure: {self.delay_departure}\n"
             f"Delay Arrival: {self.delay_arrival}\n"
-            f"Href Ticket: {self.href}"
         )

@@ -6,10 +6,11 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 
-class TicketManager() {
+class TicketManager {
     fun parseTicketPolregio(text: String): Ticket {
         val normalTicket = Regex("""Normalny:\s*(\d+)""").find(text)?.groupValues?.get(1)?.toIntOrNull() ?: 0
         val reducedTicket = Regex("""Ulgowy.*?:\s*(\d+)""").find(text)?.groupValues?.get(1)?.toIntOrNull() ?: 0
@@ -172,6 +173,9 @@ class TicketManager() {
         if (ticket.carrier == "POLREGIO") {
             view.findViewById<LinearLayout>(R.id.fourthSection).visibility = GONE
             view.findViewById<View>(R.id.fourthSectionDivider).visibility = GONE
+//            val imageView = view.findViewById<ImageView>(R.id.qrImageView);
+//            imageView.layoutParams.width = 1000
+//            imageView.layoutParams.height = 1000
         }
         if (ticket.carrier == "PKP INTERCITY") {
             view.findViewById<LinearLayout>(R.id.fourthSection).visibility = VISIBLE
