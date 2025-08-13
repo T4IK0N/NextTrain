@@ -7,4 +7,23 @@ data class Route(
     val date: String,
     val time: String,
     val direct: Boolean
-)
+) {
+    override fun toString(): String {
+        return "start: $start\n" +
+                "end: $end\n" +
+                "timestamp: $timestamp\n" +
+                "date: $date\n" +
+                "time: $time\n" +
+                "direct: $direct"
+    }
+
+    fun toStringBeautiful(): String {
+        return "\n$start -> $end\n$timestamp\n${
+            if (direct) {
+                "Only direct"
+            } else {
+                "Direct and indirect"
+            }
+        }"
+    }
+}

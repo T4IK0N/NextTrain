@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -31,6 +32,9 @@ class ConnectionFragment : Fragment(R.layout.fragment_connection) {
     private lateinit var adapter: ConnectionAdapter
     private lateinit var progressBar: ProgressBar
     private lateinit var searchMoreButton: MaterialButton
+    private lateinit var errorTextViewTitle: TextView
+    private lateinit var errorTextViewSubtitle: TextView
+    private lateinit var errorLayout: LinearLayout
 
     @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,6 +48,9 @@ class ConnectionFragment : Fragment(R.layout.fragment_connection) {
         connectionRecyclerView = view.findViewById(R.id.connectionRecyclerView)
         progressBar = view.findViewById(R.id.progressBar)
         searchMoreButton = view.findViewById(R.id.searchMoreButton)
+        errorLayout = view.findViewById(R.id.errorLayout)
+        errorTextViewTitle = view.findViewById(R.id.errorTextViewTitle)
+        errorTextViewSubtitle = view.findViewById(R.id.errorTextViewSubtitle)
 
         connectionRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
@@ -54,20 +61,38 @@ class ConnectionFragment : Fragment(R.layout.fragment_connection) {
         lifecycleScope.launch {
             val connectionList = loadDataInBackground()
 
-            if (connectionList != null) {
-                adapter = ConnectionAdapter(connectionList)
-                connectionRecyclerView.adapter = adapter
+            when {
+                connectionList == null -> {
+                    Log.e("FAILED TO LOAD DATA", connectionList.toString())
+                    Toast.makeText(requireContext(),
+                        "Failed to load data", Toast.LENGTH_SHORT).show()
+                }
+                connectionList.isEmpty() -> {
+                    progressBar.visibility = GONE
+                    errorTextViewSubtitle.text = currentRoute.toStringBeautiful()
+                    errorLayout.visibility = VISIBLE
+                    errorTextViewTitle.visibility = VISIBLE
+                    errorTextViewSubtitle.visibility = VISIBLE
+                }
+                else -> {
+                    adapter = ConnectionAdapter(connectionList)
+                    connectionRecyclerView.adapter = adapter
 
-                progressBar.visibility = GONE
-                connectionRecyclerView.visibility = VISIBLE
-                searchMoreButton.visibility = VISIBLE
+                    progressBar.visibility = GONE
+                    connectionRecyclerView.visibility = VISIBLE
+                    searchMoreButton.visibility = VISIBLE
 
-                setupRecyclerViewScroll()
-            } else {
-                Toast.makeText(requireContext(),
-                    "Failed to load data", Toast.LENGTH_SHORT).show()
+                    setupRecyclerViewScroll()
+
+                    Log.d("SEARCHED CONNECTION LIST", connectionList.toString())
+                }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        removeLastSavedFile()
     }
 
     private fun getCurrentRoute(): Route {
@@ -87,7 +112,7 @@ class ConnectionFragment : Fragment(R.layout.fragment_connection) {
         return withContext(Dispatchers.IO) {
             try {
                 val currentRoute = getCurrentRoute()
-                Log.e("CURRENT ROUTE", currentRoute.toString())
+                Log.d("CURRENT ROUTE", currentRoute.toString())
 
                 // python init
                 if (!Python.isStarted()) {
@@ -118,7 +143,7 @@ class ConnectionFragment : Fragment(R.layout.fragment_connection) {
 
                 readJsonFile(requireContext())
             } catch (e: Exception) {
-                Log.e("LOAD_ERROR", "Error loading data", e)
+                Log.e("loadDataInBackground() has crashed", "Error loading data", e)
                 null
             }
         }
@@ -139,8 +164,9 @@ class ConnectionFragment : Fragment(R.layout.fragment_connection) {
 
                     if (currentConnections != null && currentConnections.size > 10) {
                         // wiecej niz 10 bo jeszcze raz pobierze
+                        Log.i("AMOUNT OF TRAINS", "Cannot download more trains than 10 in search")
                         Toast.makeText(requireContext(),
-                            "Nie można pobrać więcej pociągów",Toast.LENGTH_SHORT).show()
+                            "Cannot download more trains",Toast.LENGTH_SHORT).show()
                         isLoading = false
                         return@launch
                     }
@@ -195,5 +221,21 @@ class ConnectionFragment : Fragment(R.layout.fragment_connection) {
             Log.e("JSON_ERROR", "Error reading JSON file", e)
             null
         }
+    }
+
+    private fun removeLastSavedFile() {
+        // python init
+        if (!Python.isStarted()) {
+            Python.start(AndroidPlatform(requireContext()))
+        }
+
+        val py = Python.getInstance()
+        val main = py.getModule("main")
+        val filesDirPath = requireContext().filesDir.absolutePath
+
+        main.callAttr(
+            "remove_last_saved_file",
+            filesDirPath,
+        )
     }
 }

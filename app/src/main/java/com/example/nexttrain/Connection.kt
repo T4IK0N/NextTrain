@@ -15,6 +15,18 @@ data class Connection(
     @SerializedName("delay_arrival") val delayArrival: String?,
     var isNewDateDividerVisible: Boolean = false
 ) {
+    override fun toString(): String {
+        return "id: $id" +
+                "; station: $station" +
+                "; date: $date" +
+                "; travelTime: $travelTime" +
+                "; departureTime: $departureTime" +
+                "; arrivalTime: $arrivalTime" +
+                "; transfers: $transfers" +
+                "; delayDeparture: $delayDeparture" +
+                "; delayArrival: $delayArrival"
+    }
+
     fun getTransportImageResource(): List<Int> {
         val transportImages = mutableListOf<Int>()
         transport?.forEach { train ->

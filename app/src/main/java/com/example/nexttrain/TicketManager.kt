@@ -1,12 +1,9 @@
 package com.example.nexttrain
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.View
 import android.view.View.GONE
-import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 

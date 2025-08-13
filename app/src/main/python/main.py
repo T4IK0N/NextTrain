@@ -14,39 +14,39 @@ from datetime import datetime
 
 def download_and_cache(save_path, from_station, to_station, date, time_str, direct):
     config_path = os.path.join(save_path, "config.json")
-    config = load_config(config_path)
 
     time_str_safe = time_str.replace(':', '.')
     filename = f"{from_station}-{to_station}-{date}-{time_str_safe}-{direct}_site.html"
     filepath = os.path.join(save_path, filename)
 
-    last_file = get_last_downloaded_filename(config)
+    # Usuń stary plik ZAWSZE
+    remove_last_saved_file(save_path)
 
     # Usuń stary plik jeśli nazwa się zmieniła
-    if last_file and last_file != filename:
-        old_filepath = os.path.join(save_path, last_file)
-        if os.path.exists(old_filepath):
-            os.remove(old_filepath)
-            print("Removed old file:", last_file)
+    # if last_file and last_file != filename:
+    #     old_filepath = os.path.join(save_path, last_file)
+    #     if os.path.exists(old_filepath):
+    #         os.remove(old_filepath)
+    #         print("Removed old file:", last_file)
 
     # Jeśli plik istnieje i jest aktualny - użyj cache
-    if last_file == filename and os.path.exists(filepath):
-        print("Using cached file:", filename)
-        with open(filepath, 'rb') as f:
-            content = f.read()
-    else:
-        url = generate_url(from_station, to_station, date, time_str)
-        header = {'User-Agent': random.choice(user_agents)}
-        r = requests.get(url, headers=header)
+    # if last_file == filename and os.path.exists(filepath):
+    #     print("Using cached file:", filename)
+    #     with open(filepath, 'rb') as f:
+    #         content = f.read()
+    # else:
+    url = generate_url(from_station, to_station, date, time_str)
+    header = {'User-Agent': random.choice(user_agents)}
+    r = requests.get(url, headers=header)
 
-        if r.status_code != 200:
-            print(f"Error downloading site: {r.status_code}")
-            return None
+    if r.status_code != 200:
+        print(f"Error downloading site: {r.status_code}")
+        return None
 
-        content = r.content
-        save_html(content, filepath)
-        update_last_downloaded_filename(config_path, filename)
-        print("Downloaded and saved new file:", filename)
+    content = r.content
+    save_html(content, filepath)
+    update_last_downloaded_filename(config_path, filename)
+    print("Downloaded and saved new file:", filename)
 
     return content
 
@@ -114,14 +114,14 @@ def fetch_next_trains(save_path, from_station, to_station, direct):
 
     if not os.path.exists(json_path):
         print("rozklad.json not found!")
-        return
+        return None
 
     with open(json_path, 'r', encoding='utf-8') as f:
         existing_data = json.load(f)
 
     if not existing_data:
         print("rozklad.json is empty!")
-        return
+        return None
 
     last_train = existing_data[-1]
 
@@ -130,7 +130,7 @@ def fetch_next_trains(save_path, from_station, to_station, direct):
 
     if not last_date or not last_time:
         print("Last train is missing date or departure time!")
-        return
+        return None
 
     print(f"Fetching new trains from {last_date} {last_time}...")
 
@@ -138,7 +138,7 @@ def fetch_next_trains(save_path, from_station, to_station, direct):
 
     if not new_trains:
         print("No new trains found.")
-        return
+        return None
 
     # Przefiltruj nowe pociągi, żeby nie dodać tych co już są
     existing_keys = {(train['departure_time'], train['arrival_time'], train['date'], train['travel_time']) for train in
@@ -154,7 +154,7 @@ def fetch_next_trains(save_path, from_station, to_station, direct):
 
     if not unique_new_trains:
         print("No unique new trains to add.")
-        return
+        return None
 
     # Przesuń ID
     last_id = existing_data[-1]['id']
@@ -169,6 +169,17 @@ def fetch_next_trains(save_path, from_station, to_station, direct):
 
     print(f"Added {len(unique_new_trains)} unique new trains to rozklad.json.")
     return unique_new_trains
+
+def remove_last_saved_file(save_path):
+    config_path = os.path.join(save_path, "config.json")
+    config = load_config(config_path)
+    last_file = get_last_downloaded_filename(config)
+    if last_file:
+        old_filepath = os.path.join(save_path, last_file)
+        if os.path.exists(old_filepath):
+            os.remove(old_filepath)
+            print("Removed old file:", last_file)
+
 
 # main('D:/Programowanie/android/NextTrain/app/src/main/python/', 'Warszawa Centralna', 'Szczecin Główny', datetime.today().strftime('%d.%m.%y'), datetime.today().strftime('%H:%m'), False)
 # fetch_next_trains('D:/Programowanie/android/NextTrain/app/src/main/python/', 'Warszawa Centralna', 'Szczecin Główny', False)
